@@ -16,7 +16,7 @@ a:active {
 }
 .header {
 	padding-bottom: 3%;
-	padding-top: 20px;
+	padding-top: 5%;
 	background-color: #eeeeee;
 	display: grid;
 	grid-template-columns: repeat(3, 1fr);
