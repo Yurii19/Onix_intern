@@ -25,11 +25,13 @@
 					<div class="user-menu_button"><a  href="#" class="dotts">&#9679;&#9679;&#9679;</a></div>
 				</div>
 				<div class="user-stats">
-					<div class="completed-tasks">
-						<span class="value">372</span><span class="state">Complited Tasks</span>
+					<div class="completed-tasks" id="complited">
+						<span class="value" id="complited-tasks-value">372</span>
+						<span class="state" >Complited Tasks</span>
 					</div>
-					<div class="open-tasks">
-						<span class="value">11</span><span class="state">Open Tasks</span>
+					<div class="open-tasks" id="open-tasks">
+						<span class="value" id="open-tasks-value">11</span>
+						<span class="state" >Open Tasks</span>
 					</div>
 				</div>
 			</div>
@@ -39,7 +41,10 @@
 						<li class="aside-menu_items aside-menu_title">MENU</li>
 						<li class="aside-menu_items"><a href="#">Home</a></li>
 						<li class="aside-menu_items"><a href="#">My tasks</a></li>
-						<li class="aside-menu_items aside-menu_items_3"><a href="#" class="link-notification">Notifications</a></li>
+						<li class="aside-menu_items aside-menu_items_3" id="notifications">
+							<a href="#" class="link-notification">Notifications</a>
+							<span class="notifications_number" id="notifications_value">3</span>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -79,60 +84,61 @@
 					<div class="button_wrap button_wrap_chat">
 						<span class="button_text">
 							<i class="fa fa-comments"></i>Chat</span>
+						</div>
 					</div>
+					<div class="user_logo_one"></div>
+					<div class="user_logo_two"></div>
+					<div class="user_logo_three"></div>
+					<div class="title_button share"></div>
+					<div class="title_button chat"></div>
 				</div>
-				<div class="user_logo_one"></div>
-				<div class="user_logo_two"></div>
-				<div class="user_logo_three"></div>
-				<div class="title_button share"></div>
-				<div class="title_button chat"></div>
-			</div>
-			<div class="head-nav">
-				<ul class="main-menu">
-					<li class="main-menu_item"><a href="#">Tasks</a></li>
-					<li class="main-menu_item"><a href="#">Kanban</a></li>
-					<li class="main-menu_item"><a href="#">Activity</a></li>
-					<li class="main-menu_item"><a href="#">Calendar</a></li>
-					<li class="main-menu_item"><a href="#">Files</a></li>
-				</ul>
-			</div>
-		</header>
-		<main class="main">
-			<div class="main-wrap">
-				<div class="main_hader">
-					<span class="main_hader_title">TODAY</span>
+				<div class="head-nav">
+					<ul class="main-menu">
+						<li class="main-menu_item"><a href="#">Tasks</a></li>
+						<li class="main-menu_item"><a href="#">Kanban</a></li>
+						<li class="main-menu_item"><a href="#">Activity</a></li>
+						<li class="main-menu_item"><a href="#">Calendar</a></li>
+						<li class="main-menu_item"><a href="#">Files</a></li>
+					</ul>
 				</div>
-				<div class="main_paragraph action_1">
-					<p class="action_description_1">
-						<span class="action_text">Darika samak mark as done Listing on Product Hunt so that we can reach as many potential users</span>
-						<span class="action-time">8:40 PM</span>
-					</p>
-				</div>
-				<div class="main_paragraph action_2">
-					<p class="action_description_2">
-						<span class="action_text">Emilee Simchenko commented on Account for teams and personal in bottom style</span>
-						<span class="action-time">7:32 PM</span>
-					</p>
-					<div class="extra-description">
-						<span class="extra-description_text">During a project build, it is necessary to evaluate the product design and development against project requirements and outcomes</span>
+			</header>
+			<main class="main">
+				<div class="main-wrap">
+					<div class="main_hader">
+						<span class="main_hader_title">TODAY</span>
 					</div>
-				</div>
-				<div class="main_paragraph action_3">
-					<p class="action_description_3">
-						<span class="action_text">Darika Samak uploaded 4 files on An option to search in current projects or in all projects</span>
-						<span class="action-time">6:02 PM</span>
+					<div class="main_paragraph action_1">
+						<p class="action_description_1">
+							<span class="action_text">Darika samak mark as done Listing on Product Hunt so that we can reach as many potential users</span>
+							<span class="action-time">8:40 PM</span>
+						</p>
+					</div>
+					<div class="main_paragraph action_2">
+						<p class="action_description_2">
+							<span class="action_text">Emilee Simchenko commented on Account for teams and personal in bottom style</span>
+							<span class="action-time">7:32 PM</span>
+						</p>
+						<div class="extra-description">
+							<span class="extra-description_text">During a project build, it is necessary to evaluate the product design and development against project requirements and outcomes</span>
+						</div>
+					</div>
+					<div class="main_paragraph action_3">
+						<div class="action_description_3">
+							<span class="action_text">Darika Samak uploaded 4 files on An option to search in current projects or in all projects</span>
+							<span class="action-time">6:02 PM</span>
+						</div>
 						<div class="uploaded">
-							<div class="uploaded_wrap">
+							<div class="uploaded_wrap" id="pics">
 								<div class="uploaded_item uploaded_preview1"></div>
 								<div class="uploaded_item uploaded_preview2"></div>
 								<div class="uploaded_item uploaded_preview3"></div>
 								<div class="uploaded_item uploaded_preview4"></div>
 							</div>
 						</div>
-					</p>
+					</div>
 				</div>
-			</div>
-		</main>
-	</div>
-</body>
-</html>
+			</main>
+		</div>
+		<script src="js/script.js"></script>
+	</body>
+	</html>
