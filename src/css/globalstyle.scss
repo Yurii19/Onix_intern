@@ -1,0 +1,24 @@
+
+$dark-grey: #9e9e9e;
+$light-grey: #eeebe5;
+
+@mixin pseudoelementFA ($icon) {
+	text-align: center;
+	content: $icon;//\f019
+	font-family: "FontAwesome";
+	display: inline-block;
+	line-height: 40px;
+	background-color: #E3EFFF;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-size: cover;
+}
+@mixin pseudoelement($src) {
+	content: "";
+	background-image:  url($src);
+	display: inline-block;
+	background-size: cover;
+	position: absolute;
+	background-color: red;
+}
