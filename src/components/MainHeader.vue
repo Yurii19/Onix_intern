@@ -83,12 +83,10 @@ export default {
 
 <style lang="scss">
 @import "../styles/globalstyle.scss";
+
 .header {
   display: flex;
   flex: 1;
-}
-a {
-  text-decoration: none;
 }
 .head {
   padding-top: 40px;

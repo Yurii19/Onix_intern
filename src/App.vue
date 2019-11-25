@@ -3,7 +3,7 @@
     <sidebar v-bind:numberOfNotifications="notifications" />
     <div class="right">
       <mainHeader/>
-      <mainConteiner v-on:click="printerNotification" />
+      <mainConteiner v-on:click="printNotification" />
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@ export default {
     };
   },
   methods: {
-    printerNotification: function(img) {
+    printNotification: function(img) {
       const imgs = document.getElementById("pics").children;
       for (let i = 0; i < imgs.length; i++) {
         if (img === imgs[i]) {

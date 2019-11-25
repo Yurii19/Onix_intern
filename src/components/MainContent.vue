@@ -160,8 +160,6 @@ export default {
   text-align: left;
   background-color: #eeebe5;
   border-radius: 9px;
-  .extra-description_text {
-  }
 }
 .uploaded {
   .uploaded_wrap {
