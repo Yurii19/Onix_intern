@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="layout">
     <sidebar v-bind:numberOfNotifications="notifications" />
     <div class="right">
       <mainHeader />
@@ -14,7 +14,7 @@ import mainHeader from "./components/MainHeader.vue";
 import mainConteiner from "./components/MainContent.vue";
 
 export default {
-  name: "app",
+  name: "layout",
   components: {
     sidebar,
     mainHeader,
@@ -22,7 +22,7 @@ export default {
   },
   data: function() {
     return {
-      notifications: 1
+      notifications: 3
     };
   },
   methods: {

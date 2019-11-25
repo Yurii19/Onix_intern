@@ -83,7 +83,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "globalstyle.scss";
+@import "../styles/globalstyle.scss";
 
 .aside-title::before {
   @include pseudoelement("../assets/Logo@3x.svg");
@@ -137,7 +137,6 @@ li {
     padding-right: 20px;
     height: 80px;
     color: white;
-    // flex: 1;
     justify-content: space-between;
     .user_block_avatar {
       background-image: url("../assets/hb.jpg");
@@ -147,12 +146,10 @@ li {
       background-size: cover;
     }
     .user_block_wrap {
-      // margin: 5px 0 5px 0;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       width: 60%;
-      // border: 1px solid cyan;
       .user_block_name {
         margin-bottom: 2px;
         text-align: left;

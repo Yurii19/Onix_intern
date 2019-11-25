@@ -38,7 +38,6 @@
 </template>
 
 <script>
-//const imgs = document.getElementById("pics").children;
 export default {
   name: "mainConteiner",
   props: {
@@ -46,15 +45,6 @@ export default {
   },
   data: function() {
     return {
-      // imgs: document.getElementById("pics").children,
-      // imgs: document.getElementById("pics").children,
-      //  urlDefault: "../assets/hb.jpg",
-      uploadedImages: [
-        "../assets/Tulips.jpg",
-        "../assets/Tulips.jpg",
-        "../assets/Tulips.jpg",
-        "../assets/Tulips.jpg"
-      ],
       actionDone: {
         userName: "Darika Samak ",
         userAction:
@@ -84,7 +74,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "globalstyle.scss";
+@import "../styles/globalstyle.scss";
 
 .content {
   height: 100%;

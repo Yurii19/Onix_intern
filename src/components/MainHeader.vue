@@ -77,22 +77,15 @@ export default {
         }
       ];
     }
-    // handleTask: function(event) {
-    //   if (event.target.tagName === "A") {
-    //     const menuItem = event.target.text;
-    //     this.$emit("click", menuItem);
-    //   }
-    // }
   }
 };
 </script>
 
 <style lang="scss">
-@import "globalstyle.scss";
+@import "../styles/globalstyle.scss";
 .header {
   display: flex;
   flex: 1;
-  // border: 1px solid blue;
 }
 a {
   text-decoration: none;
