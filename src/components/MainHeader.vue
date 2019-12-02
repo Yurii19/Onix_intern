@@ -1,79 +1,106 @@
-<template>
-  <div class="header">
-    <header class="head">
-      <div class="head_title_row">
-        <div class="title_header">
-          <h1>Website Redesign</h1>
-          <div class="title_button button_threepoint">
-            <a href="#" class="dotts">&#9679;&#9679;&#9679;</a>
-          </div>
-        </div>
-        <div class="header-right-bock">
-          <div class="logo_user oser_one">
-            <div class="logo_user_wrap"></div>
-          </div>
-          <div class="logo_user user_two">
-            <div class="logo_user_wrap"></div>
-          </div>
-          <div class="logo_user user_three">
-            <div class="logo_user_wrap"></div>
-          </div>
-          <div class="title_button title_button_share">
-            <span class="button_share">Share</span>
-          </div>
-          <div class="title_button title_button_chat">
-            <span class="button_chat">
-              <i class="fa fa-comments"></i>Chat
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="head-nav">
-        <ul v-on:click="handleTask" class="main-menu">
-          <li class="main-menu_item">
-            <a href="#">Tasks</a>
-          </li>
-          <li class="main-menu_item">
-            <a href="#">Kanban</a>
-          </li>
-          <li class="main-menu_item">
-            <a href="#">Activity</a>
-          </li>
-          <li class="main-menu_item">
-            <a href="#">Calendar</a>
-          </li>
-          <li class="main-menu_item">
-            <a href="#">Files</a>
-          </li>
-        </ul>
-      </div>
-    </header>
-  </div>
+<template lang="pug">
+ .header
+  header.head
+    .head_title_row
+      .title_header
+        h1 Website Redesign
+        .title_button.button_threepoint
+          a.dotts(href='#') &#x25CF;&#x25CF;&#x25CF;
+      .header-right-bock
+        .logo_user.oser_one
+          .logo_user_wrap
+        .logo_user.user_two
+          .logo_user_wrap
+        .logo_user.user_three
+          .logo_user_wrap
+        .title_button.title_button_share
+          span.button_share Share
+        .title_button.title_button_chat
+          span.button_chat
+            i.fa.fa-comments
+            | Chat
+    .head-nav
+      ul#menu.main-menu
+        li.main-menu_item( v-for="item in menu")
+          a(href='#' v-on:click="hadleClick") {{item}}
+
 </template>
 
-<script>
+<script lang="ts">
 export default {
   name: "mainHeader",
   data: function() {
-    return {};
+    return {
+      menu: ["Tasks", "Kanban", "Activity", "Calendar", "Files"]
+    };
   },
   methods: {
-    handleTask: function() {
+    hadleClick: function(event) {
+      this.tasksData();
+      this.getMenuItem(event);
+    },
+    getMenuItem: function(event) {
+      const menuItem = event.target;
+      if (menuItem.innerHTML === "Tasks") {
+        const tasksList = this.tasksData();
+        this.$emit("click", tasksList);
+      } else if (menuItem.innerHTML === "Activity") {
+        const tasksList = this.activityData();
+        this.$emit("click", tasksList);
+      }
+    },
+    tasksData: function() {
       return [
         {
-          name: "Learn scss",
+          name: "Learn scss : ",
           description: "Internet resources should be used",
-          time: new Date("27/11/2019")
+          time: "27/11/2019",
+          extraDescription: "",
+          beforeLable: "done"
         },
         {
-          name: "To do homework",
-          description: "To use the following mechanisms: variables, nesting, mixins, and selector inheritance",
-          time: new Date("28/11/2019")
+          name: "To do homework : ",
+          description:
+            "To use the following mechanisms: variables, nesting, mixins, and selector inheritance",
+          time: "28/11/2019",
+          extraDescription: "",
+          beforeLable: "done"
         },
         {
-          name: "Upload Homework to github",
+          name: "Upload Homework to github : ",
           description: "Inform this mentor",
-          time: new Date("30/11/2019")
+          time: "30/11/2019",
+          extraDescription: "",
+          beforeLable: "done"
+        }
+      ];
+    },
+    activityData: function() {
+      return [
+        {
+          name: "Darika Samak ",
+          description:
+            "mark as done Listing on Product Hunt so that we can reach as many potential users",
+          time: "8:40 PM",
+          extraDescription: "",
+          beforeLable: "done"
+        },
+        {
+          name: "Emilee Simchenko ",
+          description:
+            "commented on Account for teams and personal in bottom style",
+          time: "7:32 PM",
+          extraDescription:
+            "During a project build, it is necessary to evaluate the product design and development against project requirements and outcomes",
+          beforeLable: "comment"
+        },
+        {
+          name: "Darika Samak ",
+          description:
+            "uploaded 4 files on An option to search in current projects or in all projects",
+          time: "6:02 PM",
+          extraDescription: "",
+          beforeLable: "upload"
         }
       ];
     }
@@ -83,7 +110,9 @@ export default {
 
 <style lang="scss">
 @import "../styles/globalstyle.scss";
-
+.selected_item {
+  border-bottom: 2px solid #ffc200;
+}
 .header {
   display: flex;
   flex: 1;
@@ -174,10 +203,12 @@ export default {
 .head-nav {
   .main-menu {
     display: flex;
+    align-items: flex-end;
     padding-left: 0;
     .main-menu_item {
       margin-left: 30px;
       a {
+        border-bottom: 2px solid white;
         display: inline-block;
         color: $dark-grey;
         font-family: verdana;

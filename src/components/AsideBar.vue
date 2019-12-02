@@ -1,60 +1,41 @@
-<template>
-  <div class="left_container" id="sidebar">
-    <aside class="column">
-      <div class="aside_header">
-        <div class="aside-title">
-          <span class="aside-title_text">PROJECTUS</span>
-          <div class="button-search">
-            <i class="fa fa-search"></i>
-          </div>
-        </div>
-      </div>
+<template lang="pug">
+  #sidebar.left_container
+   aside.column
+    .aside_header
+      .aside-title
+        span.aside-title_text PROJECTUS
+        .button-search
+          i.fa.fa-search
+    .user
+      .user_block
+        .user_block_avatar
+        .user_block_wrap
+          span.user_block_name Jean Gonzales
+          span.user_block_status Product Owner
+        .user_block_menu
+          a.dotts(href='#') &#x25CF;&#x25CF;&#x25CF;
+      .user-stats
+        #complited.completed-tasks(v-on:click='handleTask')
+          span#complited-tasks-value.value {{completed}}
+          span.state Complited Tasks
+        #open-tasks.open-tasks
+          span#open-tasks-value.value {{open}}
+          span.state Open Tasks
+    .aside-menu
+      .aside-menu_wrap
+        ul.aside-menu_list
+          li.aside-menu_item.aside-menu_title MENU
+          li.aside-menu_item
+            a(href='#') Home
+          li.aside-menu_item
+            a(href='#') My tasks
+          li#notifications.aside-menu_item.aside-menu_items_3
+            a.link-notification(href='#') Notifications
+            span#notifications_value.notifications_number {{numberOfNotifications}}
 
-      <div class="user">
-        <div class="user_block">
-          <div class="user_block_avatar"></div>
-          <div class="user_block_wrap">
-            <span class="user_block_name">Jean Gonzales</span>
-            <span class="user_block_status">Product Owner</span>
-          </div>
-          <div class="user_block_menu">
-            <a href="#" class="dotts">&#9679;&#9679;&#9679;</a>
-          </div>
-        </div>
-        <div class="user-stats">
-          <div v-on:click="handleTask" class="completed-tasks" id="complited">
-            <span class="value" id="complited-tasks-value">{{completed}}</span>
-            <span class="state">Complited Tasks</span>
-          </div>
-          <div class="open-tasks" id="open-tasks">
-            <span class="value" id="open-tasks-value">{{open}}</span>
-            <span class="state">Open Tasks</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="aside-menu">
-        <div class="aside-menu_wrap">
-          <ul class="aside-menu_list">
-            <li class="aside-menu_item aside-menu_title">MENU</li>
-            <li class="aside-menu_item">
-              <a href="#">Home</a>
-            </li>
-            <li class="aside-menu_item">
-              <a href="#">My tasks</a>
-            </li>
-            <li class="aside-menu_item aside-menu_items_3" id="notifications">
-              <a href="#" class="link-notification">Notifications</a>
-              <span class="notifications_number" id="notifications_value">{{numberOfNotifications}}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </aside>
-  </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
 
   name: "sidebar",
