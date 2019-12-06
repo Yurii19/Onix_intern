@@ -1,4 +1,4 @@
-# internvue
+# vuelearn
 
 ## Project setup
 ```

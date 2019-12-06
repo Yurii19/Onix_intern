@@ -31,36 +31,35 @@
             a(href='#') My tasks
           li#notifications.aside-menu_item.aside-menu_items_3
             a.link-notification(href='#') Notifications
-            span#notifications_value.notifications_number {{numberOfNotifications}}
+            span#notifications_value.notifications_number {{numberofnotifications}}
 
 </template>
 
 <script lang="ts">
-export default {
+import Vue from "vue";
+import Component from "vue-class-component";
 
-  name: "sidebar",
+@Component({
+  name: "SideBlock",
   props: {
-     numberOfNotifications: Number
-  },
-  data: function() {
-    return {
-      completed: 372,
-      open: 11,
-      confirmQuestion: "Are you sure you want to change the number of tasks?",
-      userName: "Jean Gonzales",
-      userStatus: "Product Owner",
-    };
-  },
-  methods: {
-    handleTask: function() {
-      if (this.open > 0) {
-        confirm(this.confirmQuestion);
-        this.completed++;
-        this.open--;
-      }
+    numberofnotifications: Number
+  }
+})
+export default class sidebar extends Vue {
+  completed: number = 372;
+  open: number = 11;
+  confirmQuestion: string = "Are you sure you want to change the number of tasks?";
+  userName: string = "Jean Gonzales";
+  userStatus: string = "Product Owner";
+
+  handleTask(): void {
+    if (this.open > 0) {
+      confirm(this.confirmQuestion);
+      this.completed++;
+      this.open--;
     }
   }
-};
+}
 </script>
 
 <style lang="scss">

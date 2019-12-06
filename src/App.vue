@@ -1,91 +1,63 @@
-<template>
-  <div id="app">
-    <sidebar v-bind:numberOfNotifications="notifications" />
-    <div class="right">
-      <mainHeader v-on:click="sendTasks" />
-      <mainConteiner
-        v-on:click="printNotification"
-        v-bind:activityTitle="activity"
-        v-bind:page="currentPage"
-        v-bind:loadedFlag="pageFlag"
-      />
-      <!-- <contentTasks v-bind:tasksTitle="tasks"/> -->
-    </div>
-
-    <!-- <task /> -->
-  </div>
+<template lang="pug">
+  #app
+   SideBlock(v-bind:numberofnotifications='notifications')
+   .right
+      main-header(v-on:click='sendTasks')
+      main-conteiner(v-on:click='printNotification', 
+                     v-bind:activityTitle='pageTitle', 
+                     v-bind:page='currentPage', 
+                     v-bind:loadedflag='pageFlag')
 </template>
 
-<script>
-import sidebar from "./components/AsideBar.vue";
-import mainHeader from "./components/MainHeader.vue";
-import mainConteiner from "./components/MainContent.vue";
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import SideBlock from "./components/AsideBar.vue";
+import MainHeader from "./components/MainHeader.vue";
+import MainConteiner from "./components/MainContent.vue";
+import { dataTasks, dataActivity } from "./components/data";
 
-export default {
-  name: "app",
+@Component({
   components: {
-    sidebar,
-    mainHeader,
-    mainConteiner
-  },
-  data: function() {
-    return {
-      notifications: 3,
-      activity: "TODAY",
-      pageFlag: true,
-     // currentPage:  this.activityPage,
-      currentPage: [
-        {
-          name: "Darika Samak ",
-          description:
-            "mark as done Listing on Product Hunt so that we can reach as many potential users",
-          time: "8:40 PM",
-          extraDescription: "",
-          beforeLable: "done"
-        },
-        {
-          name: "Emilee Simchenko ",
-          description:
-            "commented on Account for teams and personal in bottom style",
-          time: "7:32 PM",
-          extraDescription:
-            "During a project build, it is necessary to evaluate the product design and development against project requirements and outcomes",
-          beforeLable: "comment"
-        },
-        {
-          name: "Darika Samak ",
-          description:
-            "uploaded 4 files on An option to search in current projects or in all projects",
-          time: "6:02 PM",
-          extraDescription: "",
-          beforeLable: "upload"
-        }
-      ]
-    }
-  },
-  methods: {
-    printNotification: function(img) {
-      const imgs = document.getElementById("pics").children;
+    SideBlock,
+    MainHeader,
+    MainConteiner
+  }
+})
+export default class App extends Vue {
+  notifications: number = 3;
+  pageFlag: boolean = true;
+  pageTitle: string = "TODAY";
+  currentPage: object []= dataActivity;
+
+  printNotification(img: HTMLElement) {
+    const imgBox: HTMLElement | null = document.getElementById("pics");
+    if (imgBox != null) {
+      const imgs: HTMLCollection = imgBox.children;
       for (let i = 0; i < imgs.length; i++) {
         if (img === imgs[i]) {
           this.notifications = i + 1;
         }
       }
-    },
-    sendTasks: function(pageData) {
-      // if (tasksList === "Activity") {
-        this.currentPage = pageData.slice();
-       // this.pageFlag = true;
-      // } else {
-      //   this.currentPage = tasksList.slice();
-      //   this.pageFlag = false;
-      // }
     }
   }
-};
+
+  sendTasks(page: string) {
+    switch (page) {
+      case "Activity":
+        this.currentPage = dataActivity;
+        break;
+      case "Tasks":
+        this.currentPage = dataTasks;
+        break;
+      default:
+        alert("The page does not exist yet");
+        break;
+    }
+  }
+}
 </script>
 
-<style>
+<style lang="scss">
 body {
   margin: 0;
 }

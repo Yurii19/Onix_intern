@@ -5,13 +5,13 @@
       span.main_header_title {{activityTitle}}
       
     .main_paragraph(v-for="action in page")
-      p.action_description_1(v-bind:class="action.beforeLable")
+      p.action_description_1(v-bind:class="action.lable")
         span.action_text {{action.name+action.description}}
         span.action-time {{action.time}}
       .extra-description(v-if="action.extraDescription != ''")
        span.extra-description_text {{action.extraDescription}}
 
-    .uploaded(v-if="loadedFlag")
+    .uploaded(v-if="loadedflag")
       #pics.uploaded_wrap(v-on:click='getUploadedImg')
         .uploaded_item.uploaded_preview1
         .uploaded_item.uploaded_preview2
@@ -20,26 +20,24 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: "mainConteiner",
+import Vue from "vue";
+import Component from "vue-class-component";
+
+@Component({
+  name: "MainConteiner",
   props: {
     activityTitle: String,
-    loadedFlag: Boolean,
-    page: []
-  },
-  data: function() {
-    return {
-     
-    };
-  },
-  methods: {
-    getUploadedImg: function(event) {
-      const img = event.target;
-      this.$emit("click", img);
-    },
+    loadedflag: Boolean,
+    page: Array
   }
+})
+export default class mainConteiner extends Vue {
  
-};
+    getUploadedImg(event: any): void {
+      const img: HTMLElement = event.target;
+      this.$emit("click", img);
+  }
+}
 </script>
 
 <style lang="scss">
