@@ -45,9 +45,11 @@ export default class App extends Vue {
     switch (page) {
       case "Activity":
         this.currentPage = dataActivity;
+        this.pageFlag = true;
         break;
       case "Tasks":
         this.currentPage = dataTasks;
+        this.pageFlag = false;
         break;
       default:
         alert("The page does not exist yet");
