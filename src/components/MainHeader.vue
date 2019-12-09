@@ -22,7 +22,7 @@
     .head-nav
       ul#menu.main-menu
         li.main-menu_item( v-for="item in menu")
-          a(href='#' v-on:click="hadleClick") {{item}}
+          router-link(v-bind:to="item.route") {{item.name}}
 
 </template>
 
@@ -36,26 +36,14 @@ import {dataTasks, dataActivity} from "./data";
   name: "MainHeader"
 })
 export default class mainHeader extends Vue {
-  menu: any = ["Tasks", "Kanban", "Activity", "Calendar", "Files"];
-  
-  hadleClick(event: any): void {
-    this.tasksData();
-    this.getMenuItem(event);
-  }
-
-  getMenuItem(event: any) {
-    const menuItem: HTMLElement = event.target;
-     this.$emit("click", menuItem.innerHTML);
-  }
-
-  tasksData(): any {
-    return dataTasks;
-  }
-
-  activityData(): any {
-    return dataActivity;
-  }
-}
+  menu: object[] = [
+    {name:"Tasks",    route: "/tasks"},
+    {name:"Kanban",   route: "/kanban"},
+    {name:"Activity", route: "/activity"},
+    {name:"Calendar", route: "/calendar"},
+    {name:"Files",    route: "/files"},
+     ];
+ }
 </script>
 
 <style lang="scss">

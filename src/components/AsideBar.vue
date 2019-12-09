@@ -48,15 +48,17 @@ import Component from "vue-class-component";
 export default class sidebar extends Vue {
   completed: number = 372;
   open: number = 11;
-  confirmQuestion: string = "Are you sure you want to change the number of tasks?";
+  confirmQuestion: string =
+    "Are you sure you want to change the number of tasks?";
   userName: string = "Jean Gonzales";
   userStatus: string = "Product Owner";
 
   handleTask(): void {
     if (this.open > 0) {
-      confirm(this.confirmQuestion);
-      this.completed++;
-      this.open--;
+      if (confirm(this.confirmQuestion)) {
+        this.completed++;
+        this.open--;
+      }
     }
   }
 }

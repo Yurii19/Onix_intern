@@ -1,33 +1,32 @@
-<template>
-  <div id="layout">
-    <sidebar v-bind:numberOfNotifications="notifications" />
-    <div class="right">
-      <mainHeader />
-      <mainConteiner v-on:click="printerNotification" />
-    </div>
-  </div>
+<template lang="pug">
+  #Layout
+    SideBlock(v-bind:numberofnotifications='notifications')
+    .right
+      main-header
+      MainConteiner(v-on:click="printNotification")    
 </template>
 
-<script>
-import sidebar from "./components/AsideBar.vue";
-import mainHeader from "./components/MainHeader.vue";
-import mainConteiner from "./components/MainContent.vue";
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
+import SideBlock from "./AsideBar.vue";
+import MainHeader from "./MainHeader.vue";
+import MainConteiner from "./MainContent.vue";
+import { dataTasks, dataActivity } from "./data";
 
-export default {
-  name: "layout",
+@Component({
   components: {
-    sidebar,
-    mainHeader,
-    mainConteiner
-  },
-  data: function() {
-    return {
-      notifications: 3
-    };
-  },
-  methods: {
-    printerNotification: function(img) {
-      const imgs = document.getElementById("pics").children;
+    SideBlock,
+    MainHeader,
+    MainConteiner
+  }
+})
+export default class Layout extends Vue {
+  notifications: number = 3;
+
+  printNotification(img: HTMLElement) {
+    const imgBox: HTMLElement | null = document.getElementById("pics");
+    if (imgBox != null) {
+      const imgs: HTMLCollection = imgBox.children;
       for (let i = 0; i < imgs.length; i++) {
         if (img === imgs[i]) {
           this.notifications = i + 1;
@@ -35,15 +34,16 @@ export default {
       }
     }
   }
-};
+}
 </script>
 
 <style>
 body {
   margin: 0;
 }
-#app {
+#Layout {
   display: flex;
+  flex: 1;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
