@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { dataTasks, dataActivity } from "../components/data";
+import { dataActivity } from "../components/data";
 
 @Component({
     name: "ActivityView",

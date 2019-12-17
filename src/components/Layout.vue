@@ -1,27 +1,34 @@
 <template lang="pug">
   #Layout
-    SideBlock(v-bind:numberofnotifications='notifications')
+    SideBlock(v-bind:numberofnotifications='notifications'
+              v-bind:numberOfMyTasks = 'numberTasks'
+              )
     .right
       main-header
-      MainConteiner(v-on:click="printNotification")    
+      MainContent(v-on:click="printNotification" v-on:snd="resendTasksNumber")    
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import SideBlock from "./AsideBar.vue";
 import MainHeader from "./MainHeader.vue";
-import MainConteiner from "./MainContent.vue";
-import { dataTasks, dataActivity } from "./data";
+import MainContent from "./MainContent.vue";
+import { dataTasks } from "./data";
 
 @Component({
   components: {
     SideBlock,
     MainHeader,
-    MainConteiner
+    MainContent
   }
 })
 export default class Layout extends Vue {
   notifications: number = 3;
+  numberTasks: number = dataTasks.length ;
+
+  resendTasksNumber(tasksNumber: any) {
+    this.numberTasks = tasksNumber;
+  }
 
   printNotification(img: HTMLElement) {
     const imgBox: HTMLElement | null = document.getElementById("pics");

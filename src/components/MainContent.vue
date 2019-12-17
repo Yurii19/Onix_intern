@@ -1,22 +1,24 @@
 <template lang="pug">
   .content
-   router-view(v-on:click="sendImg")
+   router-view(v-on:click="sendImg" v-on:snd="resendTask")
     
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import TasksView from "../views/tasks.vue"
-import ActivityView from "../views/activity.vue"
 
 @Component({
-  name: "MainConteiner",
+  name: "MainContent",
 })
-export default class mainConteiner extends Vue {
+export default class MainContent extends Vue {
 
   sendImg(img: any) {
     this.$emit("click", img);
+  }
+
+  resendTask(tasksNumber:any) {
+    this.$emit("snd", tasksNumber);
   }
  
 }

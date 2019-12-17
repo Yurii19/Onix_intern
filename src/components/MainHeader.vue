@@ -29,13 +29,12 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import Task from "../variables/task";
 import {dataTasks, dataActivity} from "./data";
 
 @Component({
   name: "MainHeader"
 })
-export default class mainHeader extends Vue {
+export default class MainHeader extends Vue {
   menu: object[] = [
     {name:"Tasks",    route: "/tasks"},
     {name:"Kanban",   route: "/kanban"},

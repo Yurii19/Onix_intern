@@ -26,33 +26,35 @@
         ul.aside-menu_list
           li.aside-menu_item.aside-menu_title MENU
           li.aside-menu_item
-            a(href='#') Home
+            a(href='#') Home {{test}}
           li.aside-menu_item
-            a(href='#') My tasks
+            router-link(to="/tasks") My tasks
+            span#notifications_value.indicator {{numberOfMyTasks}} 
           li#notifications.aside-menu_item.aside-menu_items_3
             a.link-notification(href='#') Notifications
-            span#notifications_value.notifications_number {{numberofnotifications}}
+            span#notifications_value.indicator {{numberofnotifications}}
 
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import { dataTasks, dataActivity } from "../components/data"; 
 
 @Component({
   name: "SideBlock",
   props: {
-    numberofnotifications: Number
-  }
+    numberofnotifications: Number,
+    numberOfMyTasks: Number
+  },
 })
-export default class sidebar extends Vue {
+export default class AsideBar extends Vue {
   completed: number = 372;
   open: number = 11;
   confirmQuestion: string =
     "Are you sure you want to change the number of tasks?";
   userName: string = "Jean Gonzales";
   userStatus: string = "Product Owner";
-
   handleTask(): void {
     if (this.open > 0) {
       if (confirm(this.confirmQuestion)) {
@@ -71,6 +73,18 @@ export default class sidebar extends Vue {
   @include pseudoelement("../assets/Logo@3x.svg");
   width: 21.6px;
   height: 18.9px;
+}
+.indicator {
+  margin-bottom: 3px;
+  margin-left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $background-yellow;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  color: #131313;
 }
 li {
   list-style-type: none;
@@ -207,20 +221,8 @@ li {
         font-weight: 200;
       }
     }
-    .aside-menu_items_3 {
-      .notifications_number {
-        margin-bottom: 3px;
-        margin-left: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: $background-yellow;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        color: #131313;
-      }
-    }
+    // .aside-menu_items_3 {
+    // }
   }
 }
 </style>

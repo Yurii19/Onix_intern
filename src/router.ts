@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Tasks from "./views/tasks.vue";
-import Activity from "./views/activity.vue";
-import Notfound from "./views/notfound.vue";
-import Plug from "./views/plug.vue";
+import Tasks from "./views/TasksView.vue";
+import Activity from "./views/ActivityView.vue";
+import Notfound from "./views/Notfound.vue";
+import Plug from "./views/Plug.vue";
 
 Vue.use(Router)
 

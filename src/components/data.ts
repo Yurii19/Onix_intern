@@ -1,4 +1,4 @@
-    import Task from "../variables/task";
+    import Task from "../variables/Task";
 
     export const dataActivity: object[] = [
         {
@@ -31,25 +31,25 @@
 
       export const dataTasks: Task[] = [
         {
-            name: "Learn scss : ",
+            name: "Learn scss",
             description: "Internet resources should be used",
             time: "27/11/2019",
-            extraDescription: "",
-            lable: "done"
+            //extraDescription: "",
+            label: "done"
           },
           {
-            name: "To do homework : ",
+            name: "To do homework",
             description:
               "To use the following mechanisms: variables, nesting, mixins, and selector inheritance",
             time: "28/11/2019",
-            extraDescription: "",
-           lable: "done"
+           // extraDescription: "",
+           label: "done"
           },
           {
-            name: "Upload Homework to github : ",
+            name: "Upload Homework to github",
             description: "Inform this mentor",
             time: "30/11/2019",
-            extraDescription: "",
-            lable: "done"
+           // extraDescription: "",
+            label: "done"
           }
       ]
