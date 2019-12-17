@@ -26,7 +26,7 @@
         ul.aside-menu_list
           li.aside-menu_item.aside-menu_title MENU
           li.aside-menu_item
-            a(href='#') Home {{test}}
+            a(href='#') Home
           li.aside-menu_item
             router-link(to="/tasks") My tasks
             span#notifications_value.indicator {{numberOfMyTasks}} 
