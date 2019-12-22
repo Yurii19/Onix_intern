@@ -5,10 +5,15 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
-    
+import Component from "vue-class-component";
+import Vue from 'vue';
+
+@Component({
+  name: "PlugView",
 })
+export default class PlugView extends Vue{
+    
+}
 </script>
 
 

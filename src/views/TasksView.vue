@@ -1,9 +1,9 @@
 <template lang="pug">
   main.main
      .main_header(v-on:)
-       span.main_header_title TASKS
+       span.main_header_title TASKS 
      form#new-task 
-      .new-task_wrap
+      .new-task_wrap 
         #input-block(v-show="flagShow")
           input#new-task-name(type="text" v-bind:placeholder="namePlaceholder" v-model="newTask[0].value")
           input#new-task-deadline(type="text" v-bind:placeholder="deadlinePlaceholder" v-model="newTask[1].value")
@@ -12,7 +12,7 @@
           transition(name="fade")
             input#task-add.add-buton(v-if="flagShow" type="submit" value="+ add new task" v-on:click.prevent="addTask")
           input#task-show.add-buton(type="button" v-model="buttonAddText" v-on:click="showForm")
-     .main_paragraph(v-for="action in currentPage")
+     .main_paragraph(v-for="(action, index) in currentPage") 
        p.action_description_1(v-bind:class="action.label")
          span.action_text
             span.task_name {{action.name+' : '}}
@@ -27,23 +27,47 @@ import { dataTasks } from "../components/data";
 import Task from "../variables/Task";
 
 @Component({
-  name: "TasksView",
-  watch: {
-    currentPage: function(e) {
-      const tasksNumber = e.length;
-      this.$emit("snd", tasksNumber);
-    }
-  }
+  name: "TasksView"
 })
 export default class TasksView extends Vue {
-  currentPage: Task[] = dataTasks.slice();
-  static thePage = dataTasks;
+  currentPage: Task[] = [];
+
   flagShow: boolean = false;
   buttonAddText: string = "Show form";
   buttonRemoveText: string = "Remove task";
-  namePlaceholder = "New task name";
-  deadlinePlaceholder = "New task Deadline";
-  descriptionPlaceholder = "Input task description";
+  namePlaceholder: string = "New task name";
+  deadlinePlaceholder: string = "New task Deadline";
+  descriptionPlaceholder: string = "Input task description";
+  confirmQuestion: string =
+    "Are you sure you want to change the number of tasks?";
+
+  addClass() {
+    const arrTasks = document.getElementsByClassName("action_description_1");
+    for (let i = 0; i < arrTasks.length; i++) {
+      let index = "ell" + i;
+      arrTasks[i].id = index;
+      let temp = document.getElementById(index);
+      if (temp) {
+        temp.classList.add("smallbigsmall");
+        temp.style.animationDelay = i*0.5 + "s";
+      }
+    }
+  }
+
+  // beforeCreate() {}
+  created() {
+    this.currentPage = dataTasks.slice();
+    this.sendSize();
+  }
+  updated(x: any) {
+    this.sendSize();
+  }
+
+  mounted() {
+    this.addClass();
+  }
+  // beforeMount() {}
+  // beforeDestroy() {}
 
   newTask = [
     {
@@ -64,8 +88,12 @@ export default class TasksView extends Vue {
     const tasksNumber = this.currentPage.length;
     this.$emit("snd", tasksNumber);
   }
+
   removeTask(name: any) {
-    this.currentPage = this.currentPage.filter(page => name != page.name);
+    if (confirm(this.confirmQuestion)) {
+      this.currentPage = this.currentPage.filter(page => name != page.name);
+      this.$emit("rmv");
+    }
   }
 
   addTask() {
@@ -85,9 +113,9 @@ export default class TasksView extends Vue {
     });
 
     if (
-      this.newTask[0].value != "" &&
-      this.newTask[1].value != "" &&
-      this.newTask[2].value != ""
+      this.newTask[0].value &&
+      this.newTask[1].value &&
+      this.newTask[2].value
     ) {
       const res: Task = {
         name: this.newTask[0].value,
@@ -117,9 +145,26 @@ export default class TasksView extends Vue {
 
 <style lang="scss" scoped>
 @import "../styles/globalstyle.scss";
+
+@keyframes bigfont {
+  0% {
+    font-size: 1em;
+  }
+  50% {
+    font-size: 1.1em;
+  }
+  100% {
+    font-size: 1em;
+  }
+}
+.smallbigsmall {
+  animation-name: bigfont;
+  animation-duration: 0.5s;
+}
 .warning {
   box-shadow: inset 0px 0px 6px rgba(235, 105, 105, 0.9);
 }
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;

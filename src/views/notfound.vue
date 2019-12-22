@@ -6,18 +6,20 @@
 
 
 <script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
-    
+import Component from "vue-class-component";
+import Vue from "vue";
+
+@Component({
+  name: "Plug"
 })
+export default class NotFound extends Vue {}
 </script>
 
 
 <style lang="scss" scoped>
 .wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-
 </style>

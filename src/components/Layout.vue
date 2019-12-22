@@ -2,10 +2,11 @@
   #Layout
     SideBlock(v-bind:numberofnotifications='notifications'
               v-bind:numberOfMyTasks = 'numberTasks'
+              v-bind:numberOfCompletedTasks = 'numberOfCompletedTasks'
               )
     .right
       main-header
-      MainContent(v-on:click="printNotification" v-on:snd="resendTasksNumber")    
+      MainContent(v-on:click="printNotification" v-on:snd="resendTasksNumber" v-on:rmv="resendRemove")    
 </template>
 
 <script lang="ts">
@@ -25,6 +26,11 @@ import { dataTasks } from "./data";
 export default class Layout extends Vue {
   notifications: number = 3;
   numberTasks: number = dataTasks.length ;
+  numberOfCompletedTasks: number = 372; 
+
+  resendRemove() {
+    this.numberOfCompletedTasks++;
+  }
 
   resendTasksNumber(tasksNumber: any) {
     this.numberTasks = tasksNumber;

@@ -10,16 +10,16 @@
       .user_block
         .user_block_avatar
         .user_block_wrap
-          span.user_block_name Jean Gonzales
-          span.user_block_status Product Owner
+          span.user_block_name {{userName}}
+          span.user_block_status {{userStatus}}
         .user_block_menu
           a.dotts(href='#') &#x25CF;&#x25CF;&#x25CF;
       .user-stats
-        #complited.completed-tasks(v-on:click='handleTask')
-          span#complited-tasks-value.value {{completed}}
+        #complited.completed-tasks
+          span#complited-tasks-value.value {{numberOfCompletedTasks}}
           span.state Complited Tasks
         #open-tasks.open-tasks
-          span#open-tasks-value.value {{open}}
+          span#open-tasks-value.value {{numberOfMyTasks}}
           span.state Open Tasks
     .aside-menu
       .aside-menu_wrap
@@ -29,7 +29,6 @@
             a(href='#') Home
           li.aside-menu_item
             router-link(to="/tasks") My tasks
-            span#notifications_value.indicator {{numberOfMyTasks}} 
           li#notifications.aside-menu_item.aside-menu_items_3
             a.link-notification(href='#') Notifications
             span#notifications_value.indicator {{numberofnotifications}}
@@ -40,29 +39,19 @@
 import Vue from "vue";
 import Component from "vue-class-component";
 import { dataTasks, dataActivity } from "../components/data"; 
+import { Prop, Watch } from 'vue-property-decorator';
 
 @Component({
   name: "SideBlock",
-  props: {
-    numberofnotifications: Number,
-    numberOfMyTasks: Number
-  },
 })
 export default class AsideBar extends Vue {
-  completed: number = 372;
-  open: number = 11;
-  confirmQuestion: string =
-    "Are you sure you want to change the number of tasks?";
+@Prop({default: 0}) numberOfMyTasks: number|undefined;
+@Prop({default: 0}) numberofnotifications: number|undefined;
+@Prop({default: 0}) numberOfCompletedTasks: number|undefined;
+  // confirmQuestion: string =
+  //   "Are you sure you want to change the number of tasks?";
   userName: string = "Jean Gonzales";
   userStatus: string = "Product Owner";
-  handleTask(): void {
-    if (this.open > 0) {
-      if (confirm(this.confirmQuestion)) {
-        this.completed++;
-        this.open--;
-      }
-    }
-  }
 }
 </script>
 

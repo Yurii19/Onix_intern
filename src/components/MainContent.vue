@@ -1,6 +1,6 @@
 <template lang="pug">
   .content
-   router-view(v-on:click="sendImg" v-on:snd="resendTask")
+   router-view(v-on:click="sendImg" v-on:snd="resendTask" v-on:rmv="resendRemove")
     
 </template>
 
@@ -12,6 +12,10 @@ import Component from "vue-class-component";
   name: "MainContent",
 })
 export default class MainContent extends Vue {
+
+  resendRemove(){
+    this.$emit("rmv");
+  }
 
   sendImg(img: any) {
     this.$emit("click", img);

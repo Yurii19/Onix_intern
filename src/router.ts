@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Tasks from "./views/TasksView.vue";
 import Activity from "./views/ActivityView.vue";
-import Notfound from "./views/Notfound.vue";
-import Plug from "./views/Plug.vue";
+import NotFound from "./views/NotFound.vue";
+import PlugView from "./views/PlugView.vue";
 
 Vue.use(Router)
 
@@ -18,7 +18,7 @@ export default new Router({
         {
             name: 'kanban',
             path: '/kanban',
-            component: Plug,
+            component: PlugView,
         },
         {
             name: 'activity',
@@ -28,12 +28,12 @@ export default new Router({
         {
             name: 'calendar',
             path: '/calendar',
-            component: Plug,
+            component: PlugView,
         },
         {
             name: 'files',
             path: '/files',
-            component: Plug,
+            component: PlugView,
         },
         {
             name: 'home',
@@ -43,7 +43,7 @@ export default new Router({
         {
             name: 'notfound',
             path: '/*',
-            component: Notfound,
+            component: NotFound,
         },
     ]
 })
