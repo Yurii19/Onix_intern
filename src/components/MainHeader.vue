@@ -23,6 +23,7 @@
       ul#menu.main-menu
         li.main-menu_item( v-for="item in menu")
           router-link(v-bind:to="item.route") {{item.name}}
+            span.lwrp
 
 </template>
 
@@ -47,7 +48,7 @@ export default class MainHeader extends Vue {
 
 <style lang="scss">
 @import "../styles/globalstyle.scss";
-.selected_item {
+.router-link-active {
   border-bottom: 2px solid #ffc200;
 }
 .header {
@@ -138,20 +139,21 @@ export default class MainHeader extends Vue {
   }
 }
 .head-nav {
+  display: flex;
+  flex-direction: column;
+  height: 55px;
   .main-menu {
+    margin: 0;
     display: flex;
-    align-items: flex-end;
+    flex: 1;
     padding-left: 0;
     .main-menu_item {
+      display: flex;
       margin-left: 30px;
       a {
-        border-bottom: 2px solid white;
-        display: inline-block;
+        padding-top: 19px;
         color: $dark-grey;
         font-family: verdana;
-      }
-      a:hover {
-        color: black;
       }
     }
   }

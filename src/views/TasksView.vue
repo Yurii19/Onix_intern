@@ -41,33 +41,22 @@ export default class TasksView extends Vue {
   confirmQuestion: string =
     "Are you sure you want to change the number of tasks?";
 
-  addClass() {
-    const arrTasks = document.getElementsByClassName("action_description_1");
-    for (let i = 0; i < arrTasks.length; i++) {
-      let index = "ell" + i;
-      arrTasks[i].id = index;
-      let temp = document.getElementById(index);
-      if (temp) {
-        temp.classList.add("smallbigsmall");
-        temp.style.animationDelay = i*0.5 + "s";
-      }
-    }
-  }
-
-  // beforeCreate() {}
   created() {
     this.currentPage = dataTasks.slice();
     this.sendSize();
   }
+
+  beforeUpdate() {}
+
   updated(x: any) {
     this.sendSize();
   }
 
   mounted() {
-    this.addClass();
+    this.addBigSmallClass();
   }
-  // beforeMount() {}
-  // beforeDestroy() {}
+
+  beforeDestroy() {}
 
   newTask = [
     {
@@ -83,6 +72,28 @@ export default class TasksView extends Vue {
       value: ""
     }
   ];
+
+  addBigSmallClass() {
+    const arrTasks = document.getElementsByClassName("action_description_1");
+    for (let i = 0; i < arrTasks.length; i++) {
+      let index = "ell" + i;
+      arrTasks[i].id = index;
+      let temp = document.getElementById(index);
+      if (temp) {
+        temp.classList.add("smallbigsmall");
+        temp.style.animationDelay = i * 0.5 + "s";
+      }
+    }
+  }
+
+  removeBigSmallClass() {
+    const arrTasks = document.getElementsByClassName("action_description_1");
+    for (let i = 0; i < arrTasks.length; i++) {
+      if (arrTasks[i] && arrTasks[i].classList.contains("smallbigsmall")) {
+        arrTasks[i].classList.remove("smallbigsmall");
+      }
+    }
+  }
 
   sendSize() {
     const tasksNumber = this.currentPage.length;
@@ -123,11 +134,26 @@ export default class TasksView extends Vue {
         time: this.newTask[1].value,
         label: "done"
       };
-      this.currentPage.push(res);
+      this.currentPage.unshift(res);
 
       this.newTask.forEach(element => {
         element.value = "";
       });
+      this.removeBigSmallClass();
+      setTimeout(this.blink, 20);
+      setTimeout(this.removeBlink, 3000);
+    }
+  }
+
+  blink() {
+    const arrTasks = document.getElementsByClassName("action_description_1");
+    arrTasks[0].classList.add("blinktask");
+  }
+
+  removeBlink() {
+    const arrTasks = document.getElementsByClassName("action_description_1");
+    if (arrTasks[0] && arrTasks[0].classList.contains("blinktask")) {
+      arrTasks[0].classList.remove("blinktask");
     }
   }
 
@@ -157,9 +183,26 @@ export default class TasksView extends Vue {
     font-size: 1em;
   }
 }
+
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.blinktask {
+  animation-name: blink;
+  animation-duration: 0.9s;
+  animation-iteration-count: 2;
+}
 .smallbigsmall {
   animation-name: bigfont;
-  animation-duration: 0.5s;
+  animation-duration: 0.9s;
 }
 .warning {
   box-shadow: inset 0px 0px 6px rgba(235, 105, 105, 0.9);
