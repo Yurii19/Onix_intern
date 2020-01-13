@@ -1,6 +1,6 @@
 <template lang="pug">
   main.main
-     .main_header(v-on:)
+     .main_header
        span.main_header_title TASKS 
      form#new-task 
       .new-task_wrap 
@@ -13,7 +13,7 @@
             input#task-add.add-buton(v-if="flagShow" type="submit" value="+ add new task" v-on:click.prevent="addTask")
           input#task-show.add-buton(type="button" v-model="buttonAddText" v-on:click="showForm")
      .main_paragraph(v-for="(action, index) in currentPage") 
-       p.action_description_1(v-bind:class="action.label")
+       p.action_description_1(v-bind:class="action.status")
          span.action_text
             span.task_name {{action.name+' : '}}
             span.task_description {{action.description}}
@@ -100,9 +100,16 @@ export default class TasksView extends Vue {
     this.$emit("snd", tasksNumber);
   }
 
+  refreshId(arr: Task[]) {
+    for (let i = 0; i < arr.length; i++) {
+      arr[i].id = i;
+    }
+  }
+
   removeTask(name: any) {
     if (confirm(this.confirmQuestion)) {
       this.currentPage = this.currentPage.filter(page => name != page.name);
+      this.refreshId(this.currentPage);
       this.$emit("rmv");
     }
   }
@@ -129,10 +136,11 @@ export default class TasksView extends Vue {
       this.newTask[2].value
     ) {
       const res: Task = {
+        id: this.currentPage.length + 1,
         name: this.newTask[0].value,
         description: this.newTask[2].value,
         time: this.newTask[1].value,
-        label: "done"
+        status: "todo"
       };
       this.currentPage.unshift(res);
 
@@ -298,6 +306,11 @@ export default class TasksView extends Vue {
   @include pseudoelementFA("\f00c");
   background-color: #cef9c6;
 }
+
+.todo::before {
+  @include pseudoelementFA("\f12a");
+  background-color: #fab1a0;
+}
 .comment::before {
   @include pseudoelementFA("\f27a");
   background-color: #fff8dd;
@@ -365,5 +378,9 @@ export default class TasksView extends Vue {
   margin-left: auto;
   color: $dark-grey;
   font-size: 0.9em;
+}
+
+.task_description {
+  word-wrap: break-word;
 }
 </style>

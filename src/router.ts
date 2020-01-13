@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Tasks from "./views/TasksView.vue";
 import Activity from "./views/ActivityView.vue";
+import Canban from "./views/KanbanView.vue";
 import NotFound from "./views/NotFound.vue";
 import PlugView from "./views/PlugView.vue";
 
@@ -18,7 +19,7 @@ export default new Router({
         {
             name: 'kanban',
             path: '/kanban',
-            component: PlugView,
+            component: Canban,
         },
         {
             name: 'activity',

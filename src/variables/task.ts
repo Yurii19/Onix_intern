@@ -1,9 +1,12 @@
+
+
+// import {Statuses} from "../variables/Statuses";
 export default interface Task {
 
+    id: number
     name: string;
     description: string;
     time: string;
-    //extraDescription: string;
-    label: string
+    status: string;
     
 }
