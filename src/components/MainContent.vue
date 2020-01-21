@@ -1,17 +1,25 @@
 <template lang="pug">
   .content
-   router-view(v-on:click="sendImg" v-on:snd="resendTask" v-on:rmv="resendRemove")
+   router-view(v-bind:twDataTasks="mcDataTasks"
+              v-on:click="sendImg" 
+              v-on:snd="resendTask" 
+              v-on:rmv="resendRemove"
+              v-on:sendData="resendData"
+              v-on:sendEditedTask="resendEditedTask")
     
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
+import { Prop } from 'vue-property-decorator';
+import Task from "../variables/Task";
 
 @Component({
   name: "MainContent",
 })
 export default class MainContent extends Vue {
+  @Prop() mcDataTasks!: Task[];
 
   resendRemove(){
     this.$emit("rmv");
@@ -23,6 +31,14 @@ export default class MainContent extends Vue {
 
   resendTask(tasksNumber:any) {
     this.$emit("snd", tasksNumber);
+  }
+
+  resendData(transitDataTasks:any) {
+    this.$emit("sendData", transitDataTasks);
+  }
+
+  resendEditedTask(updatedTask: any) {
+    this.$emit("sendEditedTask", updatedTask);
   }
  
 }

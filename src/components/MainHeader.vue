@@ -48,7 +48,7 @@ export default class MainHeader extends Vue {
 
 <style lang="scss">
 @import "../styles/globalstyle.scss";
-.router-link-active {
+.router-link-active, .main-menu_item:hover {
   border-bottom: 2px solid #ffc200;
 }
 .header {

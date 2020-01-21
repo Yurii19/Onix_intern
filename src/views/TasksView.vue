@@ -2,79 +2,89 @@
   main.main
      .main_header
        span.main_header_title TASKS 
-     form#new-task 
-      .new-task_wrap 
-        #input-block(v-show="flagShow")
-          input#new-task-name(type="text" v-bind:placeholder="namePlaceholder" v-model="newTask[0].value")
-          input#new-task-deadline(type="text" v-bind:placeholder="deadlinePlaceholder" v-model="newTask[1].value")
-          textarea#new-task-description(rows="5" v-bind:placeholder="descriptionPlaceholder" v-model="newTask[2].value")
-        .controls  
-          transition(name="fade")
-            input#task-add.add-buton(v-if="flagShow" type="submit" value="+ add new task" v-on:click.prevent="addTask")
-          input#task-show.add-buton(type="button" v-model="buttonAddText" v-on:click="showForm")
-     .main_paragraph(v-for="(action, index) in currentPage") 
-       p.action_description_1(v-bind:class="action.status")
-         span.action_text
-            span.task_name {{action.name+' : '}}
-            span.task_description {{action.description}}
-         span.action-time {{action.time}}
-       input.remove-button(type="button" v-model="buttonRemoveText" v-on:click="removeTask(action.name)")
+     TaskDetailsModal(v-if="showTaskDetailsModal" 
+                      v-bind:targetTask="selectedTask"
+                      v-on:close="closeModal")
+     ModalForm(v-bind:flagShowForm="modalAdd" 
+               v-bind:dataSize="currentPage.length" 
+               v-on:closeModal="showForm"
+               v-on:deliveredTask="addTask"
+               )
+     input.add-button(type="button" v-model="buttonAddText" v-on:click.prevent="showForm")
+     transition-group(name="list" tag="div")    
+       .main_paragraph(v-for="(action, index) in currentPage" v-bind:key="action.name" ) 
+         .taskBlock(ref="taskBlock" v-bind:class="action.status" v-bind:id="action.id" v-on:click="selectTask")
+           span.action_text(v-bind:id="action.id")
+              span.task_name(v-bind:id="action.id") {{action.name+' : '}}
+              span.task_description(v-bind:id="action.id") {{action.description}}
+           span.action-time(v-bind:id="action.id") {{action.time}}
+         input.remove-button(type="button" v-model="buttonRemoveText" v-on:click="removeTask(action.name)")
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { dataTasks } from "../components/data";
+import { Component, Vue, Prop } from "vue-property-decorator";
+import ModalForm from "../components/ModalForm.vue";
+import TaskDetailsModal from "../components/TaskDetailsModal.vue";
 import Task from "../variables/Task";
 
 @Component({
-  name: "TasksView"
+  name: "TasksView",
+  components: {
+    ModalForm,
+    TaskDetailsModal
+  }
 })
 export default class TasksView extends Vue {
+  @Prop() twDataTasks!: Task[];
+  $refs!: {
+    newTaskName: HTMLFormElement;
+    newTaskDeadline: HTMLFormElement;
+    newTaskDescription: HTMLFormElement;
+    taskBlock: HTMLElement[];
+  };
   currentPage: Task[] = [];
-
-  flagShow: boolean = false;
-  buttonAddText: string = "Show form";
+  modalAdd: boolean = false;
+  buttonAddText: string = "Add new task";
   buttonRemoveText: string = "Remove task";
-  namePlaceholder: string = "New task name";
-  deadlinePlaceholder: string = "New task Deadline";
-  descriptionPlaceholder: string = "Input task description";
   confirmQuestion: string =
     "Are you sure you want to change the number of tasks?";
+  newTask = ["", "", ""];
+  showTaskDetailsModal: boolean = false;
+  selectedTask: Task | null = null;
 
   created() {
-    this.currentPage = dataTasks.slice();
-    this.sendSize();
+    this.currentPage = this.twDataTasks.slice();
   }
 
   beforeUpdate() {}
 
-  updated(x: any) {
-    this.sendSize();
+  updated() {
+    this.refreshData();
   }
 
   mounted() {
-    this.addBigSmallClass();
+    this.addBigSmallClass2();
   }
 
   beforeDestroy() {}
 
-  newTask = [
-    {
-      fieldName: "newTaskName",
-      value: ""
-    },
-    {
-      fieldName: "newTaskDeadline",
-      value: ""
-    },
-    {
-      fieldName: "newTaskDescription",
-      value: ""
+  closeModal(updatedTask: any) {
+    this.$emit("sendEditedTask", updatedTask);
+    this.showTaskDetailsModal = false;
+  }
+  selectTask(event: any) {
+    if (event.target) {
+      let temp = event.target.id;
+      const result = this.currentPage.find(element => element.id == temp);
+      if (result) {
+        this.selectedTask = result;
+      }
     }
-  ];
+    this.showTaskDetailsModal = true;
+  }
 
   addBigSmallClass() {
-    const arrTasks = document.getElementsByClassName("action_description_1");
+    const arrTasks = this.$refs.taskBlock;
     for (let i = 0; i < arrTasks.length; i++) {
       let index = "ell" + i;
       arrTasks[i].id = index;
@@ -86,18 +96,37 @@ export default class TasksView extends Vue {
     }
   }
 
-  removeBigSmallClass() {
-    const arrTasks = document.getElementsByClassName("action_description_1");
-    for (let i = 0; i < arrTasks.length; i++) {
-      if (arrTasks[i] && arrTasks[i].classList.contains("smallbigsmall")) {
-        arrTasks[i].classList.remove("smallbigsmall");
-      }
-    }
-  }
+  //for writing this function was used https://learn.javascript.ru/async-iterators-generators
+  addBigSmallClass2() {
+    const arrTasks = this.$refs.taskBlock;
+    let asyncArrrayOfTasks = {
+      start: 0,
+      end: arrTasks.length,
+      [Symbol.asyncIterator]() {
+        return {
+          current: this.start,
+          last: this.end,
+          dataLocal: arrTasks,
+          async next() {
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-  sendSize() {
-    const tasksNumber = this.currentPage.length;
-    this.$emit("snd", tasksNumber);
+            if (this.current <= this.last) {
+              return { done: false, value: this.dataLocal[this.current++] };
+            } else {
+              return { done: true };
+            }
+          }
+        };
+      }
+    };
+
+    (async function() {
+      for await (let el of asyncArrrayOfTasks) {
+        if (el != undefined) {
+          el.classList.add("smallbigsmall");
+        }
+      }
+    })();
   }
 
   refreshId(arr: Task[]) {
@@ -114,64 +143,21 @@ export default class TasksView extends Vue {
     }
   }
 
-  addTask() {
-    const name = document.getElementById("new-task-name");
-    const time = document.getElementById("new-task-deadline");
-    const description = document.getElementById("new-task-description");
-    const formFields = [name, time, description];
-
-    formFields.forEach((value, index) => {
-      if (value != null) {
-        if (this.newTask[index].value === "") {
-          value.classList.add("warning");
-        } else {
-          value.classList.remove("warning");
-        }
-      }
-    });
-
-    if (
-      this.newTask[0].value &&
-      this.newTask[1].value &&
-      this.newTask[2].value
-    ) {
-      const res: Task = {
-        id: this.currentPage.length + 1,
-        name: this.newTask[0].value,
-        description: this.newTask[2].value,
-        time: this.newTask[1].value,
-        status: "todo"
-      };
-      this.currentPage.unshift(res);
-
-      this.newTask.forEach(element => {
-        element.value = "";
-      });
-      this.removeBigSmallClass();
-      setTimeout(this.blink, 20);
-      setTimeout(this.removeBlink, 3000);
-    }
+  addTask(theCurentTask: Task) {
+    this.currentPage.unshift(theCurentTask);
+    this.showForm();
   }
 
-  blink() {
-    const arrTasks = document.getElementsByClassName("action_description_1");
-    arrTasks[0].classList.add("blinktask");
-  }
-
-  removeBlink() {
-    const arrTasks = document.getElementsByClassName("action_description_1");
-    if (arrTasks[0] && arrTasks[0].classList.contains("blinktask")) {
-      arrTasks[0].classList.remove("blinktask");
-    }
+  refreshData() {
+    const transitDataTasks = this.currentPage;
+    this.$emit("sendData", transitDataTasks);
   }
 
   showForm() {
-    if (this.flagShow) {
-      this.flagShow = false;
-      this.buttonAddText = "Show form";
+    if (this.modalAdd) {
+      this.modalAdd = false;
     } else {
-      this.flagShow = true;
-      this.buttonAddText = "Hide form";
+      this.modalAdd = true;
     }
   }
 }
@@ -196,24 +182,28 @@ export default class TasksView extends Vue {
   0% {
     opacity: 1;
   }
+  25% {
+    opacity: 0.1;
+  }
   50% {
+    opacity: 1;
+  }
+  75% {
     opacity: 0.1;
   }
   100% {
     opacity: 1;
   }
 }
-.blinktask {
+
+.list-enter-active {
   animation-name: blink;
-  animation-duration: 0.9s;
-  animation-iteration-count: 2;
+  animation-duration: 3s;
 }
+
 .smallbigsmall {
   animation-name: bigfont;
   animation-duration: 0.9s;
-}
-.warning {
-  box-shadow: inset 0px 0px 6px rgba(235, 105, 105, 0.9);
 }
 
 .fade-enter-active,
@@ -225,61 +215,17 @@ export default class TasksView extends Vue {
   opacity: 0;
 }
 
-#new-task {
-  display: flex;
-  margin: 0 30px 0 30px;
-  margin-top: 30px;
-
-  .new-task_wrap {
-    display: flex;
-    flex: 1;
-    background-color: $light-grey;
-    flex-direction: column;
-    border-radius: 9px;
-    padding: 10px;
-    margin-left: 10px;
-    .controls {
-      display: flex;
-
-      .add-buton {
-        justify-content: center;
-        background-color: #aaa69d;
-        cursor: pointer;
-        color: white;
-        display: flex;
-        flex: 1;
-        padding: 5px 0 5px 0;
-        border-radius: 9px;
-        outline: none;
-        border-style: none;
-        margin-top: 15px;
-      }
-    }
-
-    #input-block {
-      display: flex;
-      flex-direction: column;
-      .new-task_name {
-        text-align: left;
-      }
-      input {
-        padding: 5px;
-        border-style: none;
-        margin-top: 15px;
-        padding-left: 10px;
-        border-radius: 9px;
-        outline: none;
-      }
-      textarea {
-        padding: 5px;
-        border-style: none;
-        margin-top: 15px;
-        padding-left: 10px;
-        border-radius: 9px;
-        outline: none;
-      }
-    }
-  }
+.add-button {
+  justify-content: center;
+  background-color: #aaa69d;
+  cursor: pointer;
+  color: white;
+  width: 120px;
+  padding: 5px 0 5px 0;
+  border-radius: 9px;
+  outline: none;
+  border-style: none;
+  margin-top: 15px;
 }
 
 .remove-button {
@@ -298,13 +244,18 @@ export default class TasksView extends Vue {
   font-style: italic;
   font-weight: 600;
 }
-#new-task::before {
+.new-task::before {
   @include pseudoelementFA("\f08d");
   background-color: #cef9c6;
 }
 .done::before {
   @include pseudoelementFA("\f00c");
   background-color: #cef9c6;
+}
+
+.inprogress::before {
+  @include pseudoelementFA("\f061");
+  background-color: #f6e58d;
 }
 
 .todo::before {
@@ -330,6 +281,8 @@ export default class TasksView extends Vue {
   .main_header {
     text-align: left;
     color: $dark-grey;
+    display: flex;
+    flex-direction: column;
     .main_header_title {
       margin-left: 30px;
       color: $dark-grey;
@@ -337,7 +290,7 @@ export default class TasksView extends Vue {
   }
   .main_paragraph {
     margin-top: 30px;
-    .action_description_1 {
+    .taskBlock {
       margin: 0 30px 0 30px;
       display: flex;
       .action_text {

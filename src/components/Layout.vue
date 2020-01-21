@@ -6,7 +6,13 @@
               )
     .right
       main-header
-      MainContent(v-on:click="printNotification" v-on:snd="resendTasksNumber" v-on:rmv="resendRemove")    
+      MainContent(v-bind:mcDataTasks="lDataTasks" 
+                  v-on:click="printNotification" 
+                  v-on:snd="resendTasksNumber" 
+                  v-on:rmv="resendRemove"
+                  v-on:sendData="refreshData"
+                  v-on:sendEditedTask="addApdated"
+                  )    
 </template>
 
 <script lang="ts">
@@ -15,7 +21,7 @@ import SideBlock from "./AsideBar.vue";
 import MainHeader from "./MainHeader.vue";
 import MainContent from "./MainContent.vue";
 import { dataTasks } from "./data";
-
+import Task from "../variables/Task";
 @Component({
   components: {
     SideBlock,
@@ -24,9 +30,10 @@ import { dataTasks } from "./data";
   }
 })
 export default class Layout extends Vue {
+  lDataTasks: Task[] = dataTasks.slice();
   notifications: number = 3;
-  numberTasks: number = dataTasks.length ;
-  numberOfCompletedTasks: number = 372; 
+  numberTasks: number = this.lDataTasks.length;
+  numberOfCompletedTasks: number = 372;
 
   resendRemove() {
     this.numberOfCompletedTasks++;
@@ -34,6 +41,22 @@ export default class Layout extends Vue {
 
   resendTasksNumber(tasksNumber: any) {
     this.numberTasks = tasksNumber;
+  }
+
+  addApdated (updatedTask:any) {
+    const taskId = updatedTask.id;
+     const result = this.lDataTasks.find(element => element.id == taskId);
+     if (result){
+        const targetId = this.lDataTasks.indexOf(result);
+       // this.lDataTasks[targetId] = updatedTask ;
+        this.lDataTasks.splice(targetId, updatedTask) ;
+
+     }
+  }
+
+  refreshData(transitDataTasks:any) {
+    this.numberTasks = transitDataTasks.length;
+    this.lDataTasks = transitDataTasks.slice() ;
   }
 
   printNotification(img: HTMLElement) {
