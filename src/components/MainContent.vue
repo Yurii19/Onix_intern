@@ -4,7 +4,7 @@
               v-on:click="sendImg" 
               v-on:snd="resendTask" 
               v-on:rmv="resendRemove"
-              v-on:sendData="resendData"
+              v-on:sendAddedTask="sendAddedTask"
               v-on:sendEditedTask="resendEditedTask")
     
 </template>
@@ -33,8 +33,8 @@ export default class MainContent extends Vue {
     this.$emit("snd", tasksNumber);
   }
 
-  resendData(transitDataTasks:any) {
-    this.$emit("sendData", transitDataTasks);
+  sendAddedTask(newDataTask:any) {
+    this.$emit("sendAddedTask", newDataTask);
   }
 
   resendEditedTask(updatedTask: any) {

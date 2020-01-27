@@ -35,7 +35,7 @@
             id: 1,
             name: "Learn scss",
             description: "Internet resources should be used",
-            time: "27/11/2019",
+            time: "2019-11-27",
             //extraDescription: "",
             status: "done"
           },
@@ -44,7 +44,7 @@
             name: "To do homework",
             description:
               "To use the following mechanisms: variables, nesting, mixins, and selector inheritance",
-            time: "28/11/2019",
+            time: "2020-02-28",
            // extraDescription: "",
            status: "todo"
           },
@@ -52,7 +52,7 @@
             id: 3,
             name: "Upload Homework to github",
             description: "Inform this mentor",
-            time: "30/11/2019",
+            time: "2019-11-30",
            // extraDescription: "",
            status: "todo"
           }

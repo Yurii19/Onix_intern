@@ -2,7 +2,7 @@
   .details_wrap
     form.new-task
         .new-task_wrap
-          input.add-buton(type="button" v-model="buttonValue" v-on:click="editTask")
+          input.add-buton(type="button" v-model="buttonSelectAction" v-on:click="editTask")
           .input-block(v-on:input="handleInput")
             input(v-bind:readonly="keyEdit" type="text" 
                   ref="taskName" 
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import Task from "../variables/Task";
+import Task from "@/variables/Task";
 
 @Component({
   name: "TaskDetailsModal"
@@ -30,14 +30,13 @@ export default class TaskDetailsModal extends Vue {
   @Prop() targetTask!: Task;
   currentTask = this.targetTask;
   targName = this.targetTask.name;
-
   $refs!: {
     taskName: HTMLFormElement;
     taskDeadline: HTMLFormElement;
     taskDescription: HTMLFormElement;
   };
   buttonSave: string = "Save";
-  buttonValue: string = "Edit";
+  buttonSelectAction: string = "Edit";
   flagShowSave: boolean = false;
   keyEdit = true;
 
@@ -52,31 +51,32 @@ export default class TaskDetailsModal extends Vue {
   }
 
   editTask() {
-    if (this.buttonValue == "Cancel") {
-      this.buttonValue = "Edit";
+    if (this.buttonSelectAction == "Cancel") {
+      this.buttonSelectAction = "Edit";
       this.keyEdit = true;
-      this.$emit("close");
+      this.$emit("closeModal");
     } else {
-      this.buttonValue = "Cancel";
+      this.buttonSelectAction = "Cancel";
       this.keyEdit = false;
     }
     this.flagShowSave = false;
   }
 
   saveChanges() {
-    this.buttonValue = "Edit";
+    this.buttonSelectAction = "Edit";
     this.keyEdit = true;
     this.flagShowSave = false;
     this.updateTask();
     const updatedTask = this.currentTask;
-    this.$emit("close", updatedTask);
+    this.$emit("sendEditedTask", updatedTask);
+    this.$emit("closeModal");
   }
 }
 </script>
 
 
 <style lang="scss" scoped>
-@import "../styles/globalstyle.scss";
+@import "@/styles/globalstyle.scss";
 
 .warning {
   box-shadow: inset 0px 0px 6px rgba(235, 105, 105, 0.9);

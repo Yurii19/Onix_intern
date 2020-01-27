@@ -1,5 +1,5 @@
 <template lang="pug">
-    layout
+    layout.layout
 </template>
 
 <script lang="ts">
@@ -17,5 +17,9 @@ export default class App extends Vue {
 </script>
 
 <style lang="scss">
+  body {
+   margin:0;
+   padding: 0;
+ }
 
 </style>

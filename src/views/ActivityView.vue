@@ -51,6 +51,8 @@ getUploadedImg(event: any) {
     background-color: #e3efff;
   }
   .main {
+    display: flex;
+    flex-direction: column;
     padding: 35px 0 30px 0;
     margin-top: 30px;
     max-width: 700px;
@@ -110,5 +112,10 @@ getUploadedImg(event: any) {
   margin-left: auto;
   color: $dark-grey;
   font-size: 0.9em;
+}
+@media (max-width: 500px) {
+  .main{
+    width: 400px;
+  }
 }
 </style>

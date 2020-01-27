@@ -1,5 +1,4 @@
 <template lang="pug">
-  .modal_wrap(v-show="flagShowForm")
     form.new-task
         .new-task_wrap 
           .input-block
@@ -14,12 +13,12 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import Task from "../variables/Task";
+import Task from "@/variables/Task";
 
 @Component({
-  name: "ModalForm",
+  name: "TaskAddModal",
 })
-export default class ModalForm extends Vue {
+export default class TaskAddModal extends Vue {
   @Prop()flagShowForm!: boolean;
   @Prop()dataSize!: number;
   $refs!: {
@@ -27,10 +26,11 @@ export default class ModalForm extends Vue {
     newTaskDeadline: HTMLFormElement;
     newTaskDescription: HTMLFormElement;
   };
+  action = ["addTask", "editTask"];
   buttonAddValue: string = "Add";
   buttonCanselValue: string = "Cancel";
   namePlaceholder: string = "New task name";
-  deadlinePlaceholder: string = "New task deadline";
+  deadlinePlaceholder: string = 'New task deadline - "yyyy-mm-dd"';
   descriptionPlaceholder: string = "Input task description";
   newTask = ["", "", ""];
 
@@ -43,7 +43,6 @@ export default class ModalForm extends Vue {
     const time = this.$refs.newTaskDeadline;
     const description = this.$refs.newTaskDescription;
     const formFields = [name, time, description];
-
     formFields.forEach((el, index) => {
       if (el != null) {
         if (el._value === "") {
@@ -55,17 +54,18 @@ export default class ModalForm extends Vue {
     });
 
     if (name._value && time._value && description._value) {
-      const theCurentTask: Task = {
+      const newTask: Task = {
         id: this.dataSize + 1,
         name: name._value,
         description: description._value,
         time: time._value,
         status: "todo"
       };
-      this.$emit("deliveredTask", theCurentTask);
+      this.$emit("sendAddedTask", newTask);
       for (let i = 0; i < this.newTask.length; i++) {
         this.newTask[i] = "";
       }
+      this.cancelForm() ;
     }
   }
 }
@@ -73,25 +73,10 @@ export default class ModalForm extends Vue {
 
 
 <style lang="scss" scoped>
-@import "../styles/globalstyle.scss";
+@import "@/styles/globalstyle.scss";
 
 .warning {
   box-shadow: inset 0px 0px 6px rgba(235, 105, 105, 0.9);
-}
-
-.modal_wrap {
-  z-index: 999;
-  background-color: rgba(0, 0, 0, 0.6);
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  display: flex;
-  justify-content: center;
-  padding-top: 40px;
 }
 
 .new-task {

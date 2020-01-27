@@ -30,25 +30,26 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import {dataTasks, dataActivity} from "./data";
+import { dataTasks, dataActivity } from "./data";
 
 @Component({
   name: "MainHeader"
 })
 export default class MainHeader extends Vue {
   menu: object[] = [
-    {name:"Tasks",    route: "/tasks"},
-    {name:"Kanban",   route: "/kanban"},
-    {name:"Activity", route: "/activity"},
-    {name:"Calendar", route: "/calendar"},
-    {name:"Files",    route: "/files"},
-     ];
- }
+    { name: "Tasks", route: "/tasks" },
+    { name: "Kanban", route: "/kanban" },
+    { name: "Activity", route: "/activity" },
+    { name: "Calendar", route: "/calendar" },
+    { name: "Files", route: "/files" }
+  ];
+}
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "../styles/globalstyle.scss";
-.router-link-active, .main-menu_item:hover {
+.router-link-active,
+.main-menu_item:hover {
   border-bottom: 2px solid #ffc200;
 }
 .header {
@@ -141,8 +142,9 @@ export default class MainHeader extends Vue {
 .head-nav {
   display: flex;
   flex-direction: column;
-  height: 55px;
+  min-height: 55px;
   .main-menu {
+    justify-content: left;
     margin: 0;
     display: flex;
     flex: 1;
@@ -166,6 +168,14 @@ export default class MainHeader extends Vue {
   }
   .header-right-bock {
     margin-top: 20px;
+  }
+  .main-menu {
+    flex-wrap: wrap;
+    width: 400px;
+    //border: 1px solid blue;
+    .main-menu_item {
+      margin-bottom: 10px;
+    }
   }
 }
 </style>

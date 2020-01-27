@@ -1,16 +1,19 @@
 <template lang="pug">
-  #Layout
-    SideBlock(v-bind:numberofnotifications='notifications'
+  .Layout
+    SideBlock.side-bar#aside(
+              ref="aside"
+              v-bind:numberofnotifications='notifications'
               v-bind:numberOfMyTasks = 'numberTasks'
               v-bind:numberOfCompletedTasks = 'numberOfCompletedTasks'
               )
     .right
       main-header
+      input.button-show(type="button" v-model="buttonShowValue" v-on:click="showAside")
       MainContent(v-bind:mcDataTasks="lDataTasks" 
                   v-on:click="printNotification" 
                   v-on:snd="resendTasksNumber" 
                   v-on:rmv="resendRemove"
-                  v-on:sendData="refreshData"
+                  v-on:sendAddedTask="refreshData"
                   v-on:sendEditedTask="addApdated"
                   )    
 </template>
@@ -34,6 +37,30 @@ export default class Layout extends Vue {
   notifications: number = 3;
   numberTasks: number = this.lDataTasks.length;
   numberOfCompletedTasks: number = 372;
+  buttonShowValue = "M";
+  sidebarFlag = false;
+  leftBar = this.$refs.aside;
+
+  $refs!: {
+    aside: HTMLElement;
+  };
+
+  showAside() {
+    const sel = document.getElementById("aside");
+    const sidebar = this.$refs.aside; // ? undefined
+    if (sel) {
+      if (!this.sidebarFlag) {
+        sel.style.display = "block";
+        sel.style.position = "absolute";
+        this.sidebarFlag = true;
+        
+      } else {
+        sel.style.display = "none";
+        sel.style.position = "static";
+        this.sidebarFlag = false;
+      }
+    }
+  }
 
   resendRemove() {
     this.numberOfCompletedTasks++;
@@ -43,20 +70,18 @@ export default class Layout extends Vue {
     this.numberTasks = tasksNumber;
   }
 
-  addApdated (updatedTask:any) {
+  addApdated(updatedTask: any) {
     const taskId = updatedTask.id;
-     const result = this.lDataTasks.find(element => element.id == taskId);
-     if (result){
-        const targetId = this.lDataTasks.indexOf(result);
-       // this.lDataTasks[targetId] = updatedTask ;
-        this.lDataTasks.splice(targetId, updatedTask) ;
-
-     }
+    const result = this.lDataTasks.find(element => element.id == taskId);
+    if (result) {
+      const targetId = this.lDataTasks.indexOf(result);
+      this.lDataTasks.splice(targetId, updatedTask);
+    }
   }
 
-  refreshData(transitDataTasks:any) {
-    this.numberTasks = transitDataTasks.length;
-    this.lDataTasks = transitDataTasks.slice() ;
+  refreshData(newDataTask: any) {
+    this.numberTasks = newDataTask.length;
+    this.lDataTasks = newDataTask.slice();
   }
 
   printNotification(img: HTMLElement) {
@@ -73,12 +98,19 @@ export default class Layout extends Vue {
 }
 </script>
 
-<style>
-body {
-  margin: 0;
+<style lang="scss" scoped>
+
+.side-bar {
+    display: block;
+    position: static;
+  }
+.side-bar {
+  border-color: red;
 }
-#Layout {
+
+.Layout {
   display: flex;
+ 
   flex: 1;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -88,7 +120,34 @@ body {
 }
 .right {
   display: flex;
+  align-items: left;
   flex: 1;
   flex-direction: column;
+}
+
+.button-show {
+  width: 30px;
+  height: 30px;
+  background-color: grey;
+  outline: none;
+  border-radius: 50%;
+  border-style: none;
+  display: none;
+  position:absolute;
+  color: white;
+  cursor: pointer;
+}
+
+@media (max-width: 500px) {
+  .side-bar {
+    display: none;
+  }
+  .right {
+    width: 400px;
+    margin-right: 0;
+  }
+  .button-show {
+    display: block;
+  }
 }
 </style>

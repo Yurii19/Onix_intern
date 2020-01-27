@@ -2,18 +2,16 @@
   main.main
      .main_header
        span.main_header_title TASKS 
-     TaskDetailsModal(v-if="showTaskDetailsModal" 
-                      v-bind:targetTask="selectedTask"
-                      v-on:close="closeModal")
-     ModalForm(v-bind:flagShowForm="modalAdd" 
-               v-bind:dataSize="currentPage.length" 
-               v-on:closeModal="showForm"
-               v-on:deliveredTask="addTask"
-               )
-     input.add-button(type="button" v-model="buttonAddText" v-on:click.prevent="showForm")
+     LayoutModal(v-if="showModal"
+                 v-bind:targetTask="taskToEdit"
+                 v-on:closeModal="closeModal"
+                 v-on:sendAddedTask="sendAddedTask"
+                 v-bind:typeModal="typeModal"
+                 )
+     input.add-button(type="button" v-model="buttonAddText" v-on:click.prevent="requestAddModal")
      transition-group(name="list" tag="div")    
        .main_paragraph(v-for="(action, index) in currentPage" v-bind:key="action.name" ) 
-         .taskBlock(ref="taskBlock" v-bind:class="action.status" v-bind:id="action.id" v-on:click="selectTask")
+         .taskBlock(ref="taskBlock" v-bind:class="action.status" v-bind:id="action.id" v-on:click="requestEditModal")
            span.action_text(v-bind:id="action.id")
               span.task_name(v-bind:id="action.id") {{action.name+' : '}}
               span.task_description(v-bind:id="action.id") {{action.description}}
@@ -23,34 +21,31 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import ModalForm from "../components/ModalForm.vue";
-import TaskDetailsModal from "../components/TaskDetailsModal.vue";
+import LayoutModal from "../components/LayoutModal.vue";
 import Task from "../variables/Task";
 
 @Component({
   name: "TasksView",
   components: {
-    ModalForm,
-    TaskDetailsModal
+    LayoutModal
   }
 })
 export default class TasksView extends Vue {
   @Prop() twDataTasks!: Task[];
+
+  typeModal = "";
+  taskToEdit: Task | null = null;
+  showModal: boolean = false;
+
   $refs!: {
-    newTaskName: HTMLFormElement;
-    newTaskDeadline: HTMLFormElement;
-    newTaskDescription: HTMLFormElement;
     taskBlock: HTMLElement[];
   };
   currentPage: Task[] = [];
-  modalAdd: boolean = false;
   buttonAddText: string = "Add new task";
   buttonRemoveText: string = "Remove task";
   confirmQuestion: string =
     "Are you sure you want to change the number of tasks?";
   newTask = ["", "", ""];
-  showTaskDetailsModal: boolean = false;
-  selectedTask: Task | null = null;
 
   created() {
     this.currentPage = this.twDataTasks.slice();
@@ -68,19 +63,29 @@ export default class TasksView extends Vue {
 
   beforeDestroy() {}
 
-  closeModal(updatedTask: any) {
-    this.$emit("sendEditedTask", updatedTask);
-    this.showTaskDetailsModal = false;
+  requestAddModal() {
+    this.showModal = true;
+    this.typeModal = "Add";
   }
+
+   requestEditModal(e:any) {
+    this.showModal = true;
+    this.typeModal = "Edit";
+    this.selectTask(e);
+  }
+ 
+  closeModal() {
+    this.showModal = false;
+  }
+
   selectTask(event: any) {
     if (event.target) {
       let temp = event.target.id;
       const result = this.currentPage.find(element => element.id == temp);
       if (result) {
-        this.selectedTask = result;
+        this.taskToEdit = result;
       }
     }
-    this.showTaskDetailsModal = true;
   }
 
   addBigSmallClass() {
@@ -129,6 +134,13 @@ export default class TasksView extends Vue {
     })();
   }
 
+  sendAddedTask(newTask: any) {
+    this.currentPage.unshift(newTask);
+    this.refreshId(this.currentPage);
+   // const newDataTask = this.currentPage;
+    //this.$emit("sendAddedTask", newDataTask);
+  }
+
   refreshId(arr: Task[]) {
     for (let i = 0; i < arr.length; i++) {
       arr[i].id = i;
@@ -143,22 +155,9 @@ export default class TasksView extends Vue {
     }
   }
 
-  addTask(theCurentTask: Task) {
-    this.currentPage.unshift(theCurentTask);
-    this.showForm();
-  }
-
   refreshData() {
-    const transitDataTasks = this.currentPage;
-    this.$emit("sendData", transitDataTasks);
-  }
-
-  showForm() {
-    if (this.modalAdd) {
-      this.modalAdd = false;
-    } else {
-      this.modalAdd = true;
-    }
+    const newDataTask = this.currentPage;
+    this.$emit("sendAddedTask", newDataTask);
   }
 }
 </script>

@@ -1,145 +1,209 @@
 <template lang="pug">
   main.main
-     TaskDetailsModal(
-      v-if="showTaskDetailsModal"
-      v-bind:targetTask="selectedTask" 
-      v-on:close="closeModal")
+     LayoutModal(
+          v-if="showModal"
+          v-bind:targetTask="taskToEdit" 
+          v-on:closeModal="closeModal"
+          v-bind:typeModal="typeModal"
+          v-on:sendEditedTask="resendEditedTask"
+          )
      .main_header
         span.main_header_title KANBAN
-     table(v-on:dblclick="selectTask" )
-       tr.todoRow
-         td.tr-head.todo {{statuses.todo}}
-         td.tr-cell(v-for="(element,id) in currentTodo" v-bind:id="element.id" v-on:mousedown="grabTask") {{element.name}} <br/> 
-          span.dl Deadline : {{element.time}}
-       tr.inprogressRow
-         td.tr-head.inprogress {{statuses.inprogress}}
-         td.tr-cell(v-for="(element,id) in currentInProgress" v-bind:id="element.id" v-on:mousedown="grabTask") {{element.name}} <br/>
-          span.dl Deadline : {{element.time}}
-       tr.doneRow
-         td.tr-head.done {{statuses.done}}
-         td.tr-cell(v-for="(element,id) in currentDone" v-bind:id="element.id" v-on:mousedown="grabTask") {{element.name}} <br/>
-          span.dl Deadline : {{element.time}}
-     
+        .search-blok
+          label(for="search") SEARCH
+          input.search(type='text' ref='keyWord' v-on:input="searchTaskByName")
+     .sort-wrap 
+       .input-period
+          span Sort by period
+          input.button-sort(type="button" v-model="sortButtonValue" v-on:click="sortByPeriod")
+          label(for="dateStart") From
+          input#dateStart(type='date' ref="dateStart")
+          label(for="dateEnd") to
+          input#dateEnd(type='date' ref="dateEnd")  
+     table
+       tr(v-for="(item, index) in statusSet")
+         td.tr-head(
+           v-bind:class="statusSet[index]"
+           v-on:dragover="moveAbove"
+           v-on:drop="relocateTask"
+         ) {{headersSet[index] }} : {{rowsSet[index].length}}
+         td.tr-cell(v-for="(element,id) in rowsSet[index]"
+           v-on:click="requestEditModal"
+           v-bind:draggable="true"
+           v-on:dragstart="grabItem"
+           v-bind:id="element.id"
+           v-bind:class="[getClassOfDecoration(item), getBackTasks(element) ]"
+           ) {{element.name}} <br/> 
+          span.dl Deadline : {{element | dateFilter}}
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Statuses } from "../variables/Statuses";
-import TaskDetailsModal from "../components/TaskDetailsModal.vue";
-import Task from "../variables/Task";
+import LayoutModal from "../components/LayoutModal.vue";
+import Task from "../variables/Task"
 
 @Component({
   name: "KanbanView",
   components: {
-    TaskDetailsModal
+    LayoutModal
+  },
+  filters:{
+    dateFilter: function(val: any){
+      return val.time;
+    }
   }
 })
 export default class KanbanView extends Vue {
-  @Prop() twDataTasks!: Task[];
+  @Prop({ default: null }) twDataTasks!: Task[];
+
+  $refs!: {
+    keyWord: HTMLFormElement;
+    dateStart: HTMLFormElement;
+    dateEnd: HTMLFormElement;
+  };
+
+  typeModal = "";
+  taskToEdit: Task | null = null;
+  showModal: boolean = false;
+  statusSet = ["todo", "inprogress", "done"];
+  headersSet = ["To do", "In progress", "Done"];
+  classesSet = ["todoDecor", "inprogressDecor", "doneDecor"];
+  backtask = "backtask";
+  sortButtonValue = "sort";
+
   statuses: any = Statuses;
   currentPage: Task[] = this.twDataTasks.slice();
-  currentTodo: Task[] = this.currentPage.filter(el => el.status === "todo");
-  currentInProgress: Task[] = this.currentPage.filter(
-    el => el.status === "inprogress"
-  );
-  currentDone: Task[] = this.currentPage.filter(el => el.status === "done");
-  showTaskDetailsModal: boolean = false;
-  selectedTask: Task | null = null;
+  rowsSet = [
+    this.currentPage.filter(el => el.status === "todo"),
+    this.currentPage.filter(el => el.status === "inprogress"),
+    this.currentPage.filter(el => el.status === "done")
+  ];
 
-  grabTask(e: any) {
-    let theTask = e.target; //element which was clicked
-    const taskStartX = e.clientX;
-    const taskStartY = e.clientY;
-    if (!theTask.classList.contains("tr-cell")) {
-      return;
-    }
-    const objTask = this.currentPage.find(element => element.id == theTask.id);
-    const localCurentPage = this.currentPage;
-    let localOldStatus: any;
-    if (objTask) {
-      localOldStatus = objTask.status;
-    }
-    const oldStatus = localOldStatus;
-    theTask.style.position = "absolute";
+  todoNumber = this.rowsSet[0].length;
+  inprogressNumber = this.rowsSet[1].length;
+  doneNumber = this.rowsSet[2].length;
 
-    moveTask(e);
-
-    function moveTask(e: any) {
-      theTask.style.left = e.clientX - theTask.offsetWidth / 2 + "px";
-      theTask.style.top = e.clientY - theTask.offsetHeight / 2 + "px";
-    }
-
-    document.onmousemove = function(e: any) {
-      moveTask(e);
-      if (
-        allocateTask(e).classList.contains("inprogress") ||
-        allocateTask(e).classList.contains("done") ||
-        allocateTask(e).classList.contains("todo")
-      ) {
-        theTask.style.backgroundColor = "#b8e994";
-      } else {
-        theTask.style.backgroundColor = "";
-      }
-    };
-
-    theTask.onmouseup = function(e: any) {
-      const newElementRow = allocateTask(e);
-      const newStatus = getNewStatus(newElementRow);
-      if(oldStatus != newStatus){
-        theTask.style.display = "none";
-        dropHandler(newStatus);
-        this.closeModal(objTask);
-        theTask.style.display = "none";
-      } else {
-        theTask.style.position = "";
-        theTask.style.backgroundColor = "";
-        document.onmousemove = null;
-        theTask.onmouseup = null;
-      }       
-    }
-
-    function dropHandler(val: string) {
-      switch (val) {
-        case "done":
-          if (objTask) {
-            objTask.status = "done";
-          }
-          break;
-        case "inprogress":
-          if (objTask) {
-            objTask.status = "inprogress";
-          }
-          break;
-        case "todo":
-          if (objTask) {
-            objTask.status = "todo";
-          }
-          break;
-      }
-    }
-
-    function getNewStatus(el: HTMLElement) {
-      const statusSet: string[] = ["todo", "inprogress", "done"];
-      let res: string = "";
-      for (let i = 0; i < statusSet.length; i++) {
-        if (el.classList.contains(statusSet[i])) {
-          res = statusSet[i];
-        }
-      }
-      return res;
-    }
-
-    function allocateTask(e: any) {
-      e.target.style.display = "none";
-      let elem = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
-      e.target.style.display = "";
-      return elem;
+  sortByPeriod() {
+    if (this.$refs.dateStart.value && this.$refs.dateEnd.value) {
+      let deadline = 0;
+      let tempSetOfTasks = [];
+      const timeStart = Date.parse(this.$refs.dateStart.value);
+      const timeEnd = Date.parse(this.$refs.dateEnd.value);
+      tempSetOfTasks = this.currentPage.filter(
+        task =>
+          timeStart < Date.parse(task.time) && Date.parse(task.time) < timeEnd
+      );
+      this.currentPage = tempSetOfTasks.slice();
+      this.refreshTable();
     }
   }
 
-  closeModal(updatedTask: any) {
+  searchTaskByName() {
+    const keyWord = this.$refs.keyWord.value.trim();
+    const filtered = this.twDataTasks.filter(el =>
+      el.name.toLowerCase().includes(keyWord)
+    );
+    this.currentPage = filtered.slice();
+    this.refreshTable();
+  }
+
+  getClassOfDecoration(status: string) {
+    let res = "";
+    switch (status) {
+      case "todo":
+        res = "todoDecor";
+        break;
+      case "inprogress":
+        res = "inprogressDecor";
+        break;
+      case "done":
+        res = "doneDecor";
+        break;
+    }
+    return res;
+  }
+
+  getBackTasks(theTask: Task) {
+    let warningClass = "";
+    const daySize = 86400000;
+    const taskDeadLine = Date.parse(theTask.time);
+    const nowTime = new Date().getTime();
+    const diff = taskDeadLine - nowTime;
+    if (diff < 0 && theTask.status != "done") {
+      warningClass = "backtask";
+    } else if (diff < daySize && diff > 0 && theTask.status != "done") {
+      warningClass = "lessday";
+    }
+    return warningClass;
+  }
+
+  refreshTable() {
+    this.rowsSet = [
+      this.currentPage.filter(el => el.status === "todo"),
+      this.currentPage.filter(el => el.status === "inprogress"),
+      this.currentPage.filter(el => el.status === "done")
+    ];
+  }
+
+  relocateTask(e: any) {
+    const localTask = e.target;
+    const taskId = e.dataTransfer.getData("text") as number;
+    let theTask: Task | undefined = this.currentPage.find(
+      el => el.id == taskId
+    );
+    if (theTask) {
+      const oldStatus = theTask.status;
+      const newStatus = this.getNewStatus(localTask);
+      for (let i = 0; i < this.currentPage.length; i++) {
+        if (
+          this.currentPage[i].id == taskId &&
+          newStatus &&
+          oldStatus != "done"
+        ) {
+          this.currentPage[i].status = newStatus;
+        }
+      }
+    }
+    localTask.style.backgroundColor = "";
+    this.refreshTable();
+  }
+
+  grabItem(e: any) {
+    const targEl = e.target as HTMLElement;
+    e.dataTransfer.setData("text", targEl.id);
+  }
+
+  moveAbove(e: any) {
+    e.preventDefault();
+    let destElement = e.target;
+    destElement.style.transition = "1s";
+    destElement.style.backgroundColor = "orange";
+    destElement.ondragleave = function() {
+      destElement.style.backgroundColor = "";
+    };
+  }
+  getNewStatus(el: HTMLElement) {
+    const localSet = this.statusSet;
+    for (let i = 0; i < localSet.length; i++) {
+      if (el.classList.contains(localSet[i])) {
+        return this.statusSet[i];
+      }
+    }
+  }
+
+  resendEditedTask(updatedTask: any) {
     this.$emit("sendEditedTask", updatedTask);
-    this.showTaskDetailsModal = false;
+  }
+
+  requestEditModal(e: any) {
+    this.showModal = true;
+    this.typeModal = "Edit";
+    this.selectTask(e);
+  }
+
+  closeModal(updatedTask: any) {
+    this.showModal = false;
   }
 
   selectTask(event: any) {
@@ -147,10 +211,9 @@ export default class KanbanView extends Vue {
       let temp = event.target.id;
       const result = this.currentPage.find(element => element.id == temp);
       if (result) {
-        this.selectedTask = result;
+        this.taskToEdit = result;
       }
     }
-    this.showTaskDetailsModal = true;
   }
 }
 </script>
@@ -158,18 +221,36 @@ export default class KanbanView extends Vue {
 <style lang="scss" scoped>
 @import "../styles/globalstyle.scss";
 
+.lessday {
+  box-shadow: inset 0px 0px 10px rgba(240, 177, 4, 0.9);
+}
+
+.backtask {
+  box-shadow: inset 0px 0px 20px rgba(235, 105, 105, 1);
+}
+
 .done::before {
   @include pseudoelementFA("\f00c");
   color: green;
+}
+.doneDecor {
+  color: #44bd32;
 }
 
 .todo::before {
   @include pseudoelementFA("\f12a");
   color: red;
 }
+.todoDecor {
+  color: #c0392b;
+}
+
 .inprogress::before {
   @include pseudoelementFA("\f061");
   color: rgb(255, 196, 0);
+}
+.inprogressDecor {
+  color: #ffaf40;
 }
 .done::before,
 .inprogress::before,
@@ -177,6 +258,43 @@ export default class KanbanView extends Vue {
   margin-right: 10px;
   border-bottom: 2px solid;
   border-right: 2px solid;
+}
+.sort-wrap {
+  padding: 20px 0 20px 0;
+  display: flex;
+  
+  justify-content: center;
+  color: $dark-grey;
+  background-color: $light-grey;
+  border-radius: 12px;
+  .input-period {
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    input {
+      color: $dark-grey;
+      outline: none;
+      margin: 0 5px 0 5px;
+      border-radius: 7px;
+      border: 1px dotted $dark-grey;
+      background-color: $light-grey;
+    }
+    .button-sort {
+      background-color: $dark-grey;
+      color: white;
+      cursor: pointer;
+    }
+  }
+}
+.search {
+  border-radius: 7px;
+  outline: none;
+  border: 1px dotted $dark-grey;
+  background-color: $light-grey;
+  padding: 2px 5px 2px 5px;
+  margin-left: 3px;
+  margin-top: 1px;
 }
 td {
   user-select: none;
@@ -190,6 +308,7 @@ td {
   .main_header {
     margin-bottom: 30px;
     display: flex;
+    justify-content: space-between;
     text-align: left;
     color: $dark-grey;
     .main_header_title {
@@ -198,15 +317,13 @@ td {
   }
 }
 
-// .tr-head:hover {
-//   border: 1px solid red;
-// }
 table {
+  padding-top: 30px;
   display: flex;
   tr {
     display: flex;
     flex-direction: column;
-    width: 33.33%;
+    min-width: 33.33%;
     .tr-head {
       font-size: 1.2em;
       color: $dark-grey;
@@ -224,15 +341,30 @@ table {
     }
     .tr-cell {
       background-color: $light-grey;
-      border-bottom: 2px solid white;
-      border-top: 2px solid white;
-      // transition: 1s;
+      font-style: italic;
+      outline: none;
     }
   }
   .tr-cell:hover {
-    border-bottom: 2px solid #ee5a24;
-    border-top: 2px solid #ee5a24;
-    // transition: 1s;
+    transition: 1s;
+    text-decoration: underline;
+  }
+}
+@media (max-width: 500px) {
+  .main_header{
+    display: flex;
+    flex-direction: column;
+  }
+  .sort-wrap  {
+    display: flex;
+    flex-direction: column;
+  }
+  .input-period  {
+    display: flex;
+    flex-direction: column;
+  }
+  table {
+    flex-direction: column;
   }
 }
 </style>
