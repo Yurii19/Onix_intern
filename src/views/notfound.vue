@@ -10,7 +10,7 @@ import Component from "vue-class-component";
 import Vue from "vue";
 
 @Component({
-  name: "Plug"
+  name: "NotFound"
 })
 export default class NotFound extends Vue {}
 </script>

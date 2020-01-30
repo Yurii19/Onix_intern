@@ -160,7 +160,7 @@ export default class MainHeader extends Vue {
     }
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .head_title_row {
     display: flex;
     flex-direction: column;
@@ -171,7 +171,7 @@ export default class MainHeader extends Vue {
   }
   .main-menu {
     flex-wrap: wrap;
-    width: 400px;
+    width: 600px;
     //border: 1px solid blue;
     .main-menu_item {
       margin-bottom: 10px;

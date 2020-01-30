@@ -38,10 +38,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import { Statuses } from "../variables/Statuses";
 import LayoutModal from "../components/LayoutModal.vue";
-import Task from "../variables/Task"
+import Task from "../variables/Task";
+import MixinComponent from "@/variables/MixinComponent.vue"
 
 @Component({
   name: "KanbanView",
@@ -52,9 +53,10 @@ import Task from "../variables/Task"
     dateFilter: function(val: any){
       return val.time;
     }
-  }
+  },
+  mixins:[MixinComponent]
 })
-export default class KanbanView extends Vue {
+export default class KanbanView extends Mixins(MixinComponent) {
   @Prop({ default: null }) twDataTasks!: Task[];
 
   $refs!: {
@@ -64,11 +66,10 @@ export default class KanbanView extends Vue {
   };
 
   typeModal = "";
-  taskToEdit: Task | null = null;
   showModal: boolean = false;
   statusSet = ["todo", "inprogress", "done"];
   headersSet = ["To do", "In progress", "Done"];
-  classesSet = ["todoDecor", "inprogressDecor", "doneDecor"];
+  classesSet = { todo: "todoDecor", inprogress: "inprogressDecor", done: "doneDecor"};
   backtask = "backtask";
   sortButtonValue = "sort";
 
@@ -108,17 +109,29 @@ export default class KanbanView extends Vue {
     this.refreshTable();
   }
 
-  getClassOfDecoration(status: string) {
+  get todoStyle() {
+    return this.classesSet.todo;
+  }
+
+  get inprogressStyle() {
+    return this.classesSet.inprogress;
+  }
+
+  get doneStyle() {
+    return this.classesSet.done;
+  }
+
+   getClassOfDecoration(status: string) {
     let res = "";
     switch (status) {
       case "todo":
-        res = "todoDecor";
+        res = this.todoStyle;
         break;
       case "inprogress":
-        res = "inprogressDecor";
+        res = this.inprogressStyle;
         break;
       case "done":
-        res = "doneDecor";
+        res = this.doneStyle;
         break;
     }
     return res;
@@ -154,7 +167,7 @@ export default class KanbanView extends Vue {
     );
     if (theTask) {
       const oldStatus = theTask.status;
-      const newStatus = this.getNewStatus(localTask);
+      const newStatus = this.getRowStatus(localTask);
       for (let i = 0; i < this.currentPage.length; i++) {
         if (
           this.currentPage[i].id == taskId &&
@@ -183,7 +196,8 @@ export default class KanbanView extends Vue {
       destElement.style.backgroundColor = "";
     };
   }
-  getNewStatus(el: HTMLElement) {
+
+  getRowStatus(el: HTMLElement) {
     const localSet = this.statusSet;
     for (let i = 0; i < localSet.length; i++) {
       if (el.classList.contains(localSet[i])) {
@@ -200,20 +214,6 @@ export default class KanbanView extends Vue {
     this.showModal = true;
     this.typeModal = "Edit";
     this.selectTask(e);
-  }
-
-  closeModal(updatedTask: any) {
-    this.showModal = false;
-  }
-
-  selectTask(event: any) {
-    if (event.target) {
-      let temp = event.target.id;
-      const result = this.currentPage.find(element => element.id == temp);
-      if (result) {
-        this.taskToEdit = result;
-      }
-    }
   }
 }
 </script>
@@ -350,7 +350,7 @@ table {
     text-decoration: underline;
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .main_header{
     display: flex;
     flex-direction: column;

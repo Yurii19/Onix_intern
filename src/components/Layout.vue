@@ -110,7 +110,8 @@ export default class Layout extends Vue {
 
 .Layout {
   display: flex;
- 
+  max-width: 1440px;
+  margin: auto;
   flex: 1;
   font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -138,7 +139,7 @@ export default class Layout extends Vue {
   cursor: pointer;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .side-bar {
     display: none;
   }

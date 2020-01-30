@@ -15,8 +15,10 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Task from "@/variables/Task";
 
+
 @Component({
   name: "TaskAddModal",
+ 
 })
 export default class TaskAddModal extends Vue {
   @Prop()flagShowForm!: boolean;

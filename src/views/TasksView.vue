@@ -20,21 +20,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import LayoutModal from "../components/LayoutModal.vue";
 import Task from "../variables/Task";
+import MixinComponent from "@/variables/MixinComponent.vue"
 
 @Component({
   name: "TasksView",
   components: {
     LayoutModal
-  }
+  },
+   mixins:[MixinComponent]
 })
-export default class TasksView extends Vue {
+export default class TasksView extends Mixins(MixinComponent) {
   @Prop() twDataTasks!: Task[];
 
   typeModal = "";
-  taskToEdit: Task | null = null;
   showModal: boolean = false;
 
   $refs!: {
@@ -74,20 +75,6 @@ export default class TasksView extends Vue {
     this.selectTask(e);
   }
  
-  closeModal() {
-    this.showModal = false;
-  }
-
-  selectTask(event: any) {
-    if (event.target) {
-      let temp = event.target.id;
-      const result = this.currentPage.find(element => element.id == temp);
-      if (result) {
-        this.taskToEdit = result;
-      }
-    }
-  }
-
   addBigSmallClass() {
     const arrTasks = this.$refs.taskBlock;
     for (let i = 0; i < arrTasks.length; i++) {
@@ -137,8 +124,6 @@ export default class TasksView extends Vue {
   sendAddedTask(newTask: any) {
     this.currentPage.unshift(newTask);
     this.refreshId(this.currentPage);
-   // const newDataTask = this.currentPage;
-    //this.$emit("sendAddedTask", newDataTask);
   }
 
   refreshId(arr: Task[]) {
