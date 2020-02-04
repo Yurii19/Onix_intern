@@ -14,6 +14,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Task from "@/variables/Task";
+import { vxm } from "@/store/store";
 
 
 @Component({
@@ -22,7 +23,8 @@ import Task from "@/variables/Task";
 })
 export default class TaskAddModal extends Vue {
   @Prop()flagShowForm!: boolean;
-  @Prop()dataSize!: number;
+   storeTasks = vxm.tasks;
+  dataSize =  this.storeTasks.dataSize;
   $refs!: {
     newTaskName: HTMLFormElement;
     newTaskDeadline: HTMLFormElement;
@@ -35,6 +37,8 @@ export default class TaskAddModal extends Vue {
   deadlinePlaceholder: string = 'New task deadline - "yyyy-mm-dd"';
   descriptionPlaceholder: string = "Input task description";
   newTask = ["", "", ""];
+
+ 
 
   cancelForm() {
     this.$emit("closeModal");
@@ -61,9 +65,10 @@ export default class TaskAddModal extends Vue {
         name: name._value,
         description: description._value,
         time: time._value,
-        status: "todo"
+        status: "todo",
+        created:  Date.now()
       };
-      this.$emit("sendAddedTask", newTask);
+      this.storeTasks.addTask(newTask);
       for (let i = 0; i < this.newTask.length; i++) {
         this.newTask[i] = "";
       }

@@ -5,7 +5,6 @@
      LayoutModal(v-if="showModal"
                  v-bind:targetTask="taskToEdit"
                  v-on:closeModal="closeModal"
-                 v-on:sendAddedTask="sendAddedTask"
                  v-bind:typeModal="typeModal"
                  )
      input.add-button(type="button" v-model="buttonAddText" v-on:click.prevent="requestAddModal")
@@ -20,42 +19,50 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
+import { Component, Vue, Prop, Mixins, Watch } from "vue-property-decorator";
 import LayoutModal from "../components/LayoutModal.vue";
 import Task from "../variables/Task";
-import MixinComponent from "@/variables/MixinComponent.vue"
+import MixinComponent from "@/variables/MixinComponent.vue";
+import { vxm } from "@/store/store";
 
 @Component({
   name: "TasksView",
   components: {
     LayoutModal
   },
-   mixins:[MixinComponent]
+  mixins: [MixinComponent]
 })
 export default class TasksView extends Mixins(MixinComponent) {
-  @Prop() twDataTasks!: Task[];
-
   typeModal = "";
   showModal: boolean = false;
+  storeTasks = vxm.tasks;
+  trackedData = vxm.tasks.dataSize;
 
   $refs!: {
     taskBlock: HTMLElement[];
   };
-  currentPage: Task[] = [];
+  currentPage: Task[] = this.storeTasks.dataValue;
   buttonAddText: string = "Add new task";
   buttonRemoveText: string = "Remove task";
   confirmQuestion: string =
     "Are you sure you want to change the number of tasks?";
   newTask = ["", "", ""];
 
-  created() {
-    this.currentPage = this.twDataTasks.slice();
+  get asd() {
+    return this.storeTasks.dataSize;
   }
+
+  saveState() {
+    const parsed = JSON.stringify(this.storeTasks.dataValue);
+    localStorage.setItem('setOfTasks', parsed);
+  }
+
+  created() {}
 
   beforeUpdate() {}
 
   updated() {
-    this.refreshData();
+    this.saveState();
   }
 
   mounted() {
@@ -69,12 +76,12 @@ export default class TasksView extends Mixins(MixinComponent) {
     this.typeModal = "Add";
   }
 
-   requestEditModal(e:any) {
+  requestEditModal(e: any) {
     this.showModal = true;
     this.typeModal = "Edit";
     this.selectTask(e);
   }
- 
+
   addBigSmallClass() {
     const arrTasks = this.$refs.taskBlock;
     for (let i = 0; i < arrTasks.length; i++) {
@@ -100,7 +107,7 @@ export default class TasksView extends Mixins(MixinComponent) {
           last: this.end,
           dataLocal: arrTasks,
           async next() {
-            await new Promise(resolve => setTimeout(resolve, 500));
+            await new Promise(resolve => setTimeout(resolve, 300));
 
             if (this.current <= this.last) {
               return { done: false, value: this.dataLocal[this.current++] };
@@ -121,28 +128,11 @@ export default class TasksView extends Mixins(MixinComponent) {
     })();
   }
 
-  sendAddedTask(newTask: any) {
-    this.currentPage.unshift(newTask);
-    this.refreshId(this.currentPage);
-  }
-
-  refreshId(arr: Task[]) {
-    for (let i = 0; i < arr.length; i++) {
-      arr[i].id = i;
-    }
-  }
-
   removeTask(name: any) {
     if (confirm(this.confirmQuestion)) {
-      this.currentPage = this.currentPage.filter(page => name != page.name);
-      this.refreshId(this.currentPage);
-      this.$emit("rmv");
+      this.storeTasks.removeTask(name);
+      this.currentPage = this.storeTasks.dataValue;
     }
-  }
-
-  refreshData() {
-    const newDataTask = this.currentPage;
-    this.$emit("sendAddedTask", newDataTask);
   }
 }
 </script>

@@ -5,6 +5,8 @@ import Activity from "./views/ActivityView.vue";
 import Canban from "./views/KanbanView.vue";
 import NotFound from "./views/NotFound.vue";
 import PlugView from "./views/PlugView.vue";
+import CalendarView from "./views/CalendarView.vue";
+import FilesView from "./views/FilesView.vue";
 
 Vue.use(Router)
 
@@ -29,12 +31,12 @@ export default new Router({
         {
             name: 'calendar',
             path: '/calendar',
-            component: PlugView,
+            component: CalendarView,
         },
         {
             name: 'files',
             path: '/files',
-            component: PlugView,
+            component: FilesView,
         },
         {
             name: 'home',

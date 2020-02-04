@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { dataActivity } from "../components/data";
+import { vxm } from "@/store/store";
 
 @Component({
     name: "ActivityView",
@@ -25,7 +25,9 @@ import { dataActivity } from "../components/data";
 })
 
 export default class ActivityView extends Vue {
-  currentPage: object []= dataActivity;
+
+  storeActions = vxm.actions;
+  currentPage: object [] = this.storeActions.dataActions;
   imgBox: string[] = ['Tulips.jpg','Tulips.jpg','Tulips.jpg','Map5.jpg'];
 
 getUploadedImg(event: any) {
@@ -55,7 +57,7 @@ getUploadedImg(event: any) {
     flex-direction: column;
     padding: 35px 0 30px 0;
     margin-top: 30px;
-    max-width: 700px;
+    width: 700px;
     border-radius: 9px;
     background-color: white;
   }
@@ -113,7 +115,7 @@ getUploadedImg(event: any) {
   color: $dark-grey;
   font-size: 0.9em;
 }
-@media (max-width: 500px) {
+@media (max-width: 700px) {
   .main{
     width: 400px;
   }

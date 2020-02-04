@@ -19,7 +19,7 @@
           span#complited-tasks-value.value {{numberOfCompletedTasks}}
           span.state Complited Tasks
         #open-tasks.open-tasks
-          span#open-tasks-value.value {{numberOfMyTasks}}
+          span#open-tasks-value.value {{numberOpenTasks}}
           span.state Open Tasks
     .aside-menu
       .aside-menu_wrap
@@ -38,18 +38,24 @@
 <script lang="ts">
 import Vue from "vue";
 import Component from "vue-class-component";
-import { dataTasks, dataActivity } from "../components/data"; 
-import { Prop, Watch } from 'vue-property-decorator';
+import { dataTasks, dataActivity } from "../components/data";
+import { Prop, Watch } from "vue-property-decorator";
+import { vxm } from "@/store/store";
 
 @Component({
-  name: "SideBlock",
+  name: "SideBlock"
 })
 export default class AsideBar extends Vue {
-@Prop({default: 0}) numberOfMyTasks: number|undefined;
-@Prop({default: 0}) numberofnotifications: number|undefined;
-@Prop({default: 0}) numberOfCompletedTasks: number|undefined;
-  // confirmQuestion: string =
-  //   "Are you sure you want to change the number of tasks?";
+  @Prop({ default: 0 }) numberofnotifications: number | undefined;
+
+  get numberOpenTasks() {
+    return vxm.tasks.dataSize - this.numberOfCompletedTasks;
+  }
+
+  get numberOfCompletedTasks() {
+    return vxm.tasks.numberOfComplited;
+  }
+
   userName: string = "Jean Gonzales";
   userStatus: string = "Product Owner";
 }

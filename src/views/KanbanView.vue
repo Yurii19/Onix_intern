@@ -5,7 +5,6 @@
           v-bind:targetTask="taskToEdit" 
           v-on:closeModal="closeModal"
           v-bind:typeModal="typeModal"
-          v-on:sendEditedTask="resendEditedTask"
           )
      .main_header
         span.main_header_title KANBAN
@@ -42,23 +41,24 @@ import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import { Statuses } from "../variables/Statuses";
 import LayoutModal from "../components/LayoutModal.vue";
 import Task from "../variables/Task";
-import MixinComponent from "@/variables/MixinComponent.vue"
+import MixinComponent from "@/variables/MixinComponent.vue";
+import { vxm } from "@/store/store";
 
 @Component({
   name: "KanbanView",
   components: {
     LayoutModal
   },
-  filters:{
-    dateFilter: function(val: any){
+  filters: {
+    dateFilter: function(val: any) {
       return val.time;
     }
   },
-  mixins:[MixinComponent]
+  mixins: [MixinComponent]
 })
 export default class KanbanView extends Mixins(MixinComponent) {
-  @Prop({ default: null }) twDataTasks!: Task[];
 
+  storeTasks = vxm.tasks;
   $refs!: {
     keyWord: HTMLFormElement;
     dateStart: HTMLFormElement;
@@ -69,12 +69,16 @@ export default class KanbanView extends Mixins(MixinComponent) {
   showModal: boolean = false;
   statusSet = ["todo", "inprogress", "done"];
   headersSet = ["To do", "In progress", "Done"];
-  classesSet = { todo: "todoDecor", inprogress: "inprogressDecor", done: "doneDecor"};
+  classesSet = {
+    todo: "todoDecor",
+    inprogress: "inprogressDecor",
+    done: "doneDecor"
+  };
   backtask = "backtask";
   sortButtonValue = "sort";
 
   statuses: any = Statuses;
-  currentPage: Task[] = this.twDataTasks.slice();
+  currentPage: Task[] = this.storeTasks.dataValue.slice();
   rowsSet = [
     this.currentPage.filter(el => el.status === "todo"),
     this.currentPage.filter(el => el.status === "inprogress"),
@@ -102,7 +106,7 @@ export default class KanbanView extends Mixins(MixinComponent) {
 
   searchTaskByName() {
     const keyWord = this.$refs.keyWord.value.trim();
-    const filtered = this.twDataTasks.filter(el =>
+    const filtered = this.storeTasks.dataValue.filter((el: any) =>
       el.name.toLowerCase().includes(keyWord)
     );
     this.currentPage = filtered.slice();
@@ -121,7 +125,7 @@ export default class KanbanView extends Mixins(MixinComponent) {
     return this.classesSet.done;
   }
 
-   getClassOfDecoration(status: string) {
+  getClassOfDecoration(status: string) {
     let res = "";
     switch (status) {
       case "todo":
@@ -162,20 +166,14 @@ export default class KanbanView extends Mixins(MixinComponent) {
   relocateTask(e: any) {
     const localTask = e.target;
     const taskId = e.dataTransfer.getData("text") as number;
-    let theTask: Task | undefined = this.currentPage.find(
-      el => el.id == taskId
-    );
+    let theTask: any = this.currentPage.find(el => el.id == taskId);
     if (theTask) {
       const oldStatus = theTask.status;
       const newStatus = this.getRowStatus(localTask);
-      for (let i = 0; i < this.currentPage.length; i++) {
-        if (
-          this.currentPage[i].id == taskId &&
-          newStatus &&
-          oldStatus != "done"
-        ) {
-          this.currentPage[i].status = newStatus;
-        }
+      if (newStatus != oldStatus && oldStatus != "done") {
+        theTask.status = newStatus;
+        this.storeTasks.updateData(theTask);
+        this.currentPage = this.storeTasks.dataValue.slice();
       }
     }
     localTask.style.backgroundColor = "";
@@ -191,7 +189,7 @@ export default class KanbanView extends Mixins(MixinComponent) {
     e.preventDefault();
     let destElement = e.target;
     destElement.style.transition = "1s";
-    destElement.style.backgroundColor = "orange";
+    destElement.style.backgroundColor = "purple";
     destElement.ondragleave = function() {
       destElement.style.backgroundColor = "";
     };
@@ -204,10 +202,6 @@ export default class KanbanView extends Mixins(MixinComponent) {
         return this.statusSet[i];
       }
     }
-  }
-
-  resendEditedTask(updatedTask: any) {
-    this.$emit("sendEditedTask", updatedTask);
   }
 
   requestEditModal(e: any) {
@@ -262,7 +256,7 @@ export default class KanbanView extends Mixins(MixinComponent) {
 .sort-wrap {
   padding: 20px 0 20px 0;
   display: flex;
-  
+
   justify-content: center;
   color: $dark-grey;
   background-color: $light-grey;
@@ -351,15 +345,15 @@ table {
   }
 }
 @media (max-width: 700px) {
-  .main_header{
+  .main_header {
     display: flex;
     flex-direction: column;
   }
-  .sort-wrap  {
+  .sort-wrap {
     display: flex;
     flex-direction: column;
   }
-  .input-period  {
+  .input-period {
     display: flex;
     flex-direction: column;
   }

@@ -5,14 +5,11 @@
           input.add-buton(type="button" v-model="buttonSelectAction" v-on:click="editTask")
           .input-block(v-on:input="handleInput")
             input(v-bind:readonly="keyEdit" type="text" 
-                  ref="taskName" 
-                  v-model="targName")
+                  v-model="currentTask.name")
             input(v-bind:readonly="keyEdit" type="text"
-                  ref="taskDeadline" 
                   v-model="currentTask.time")
             textarea(v-bind:readonly="keyEdit" rows="4" 
-                     ref="taskDescription" 
-                     v-model="targetTask.description")
+                     v-model="currentTask.description")
           .controls  
             transition(name="fade")
             input.add-buton(v-show="flagShowSave" type="submit" 
@@ -22,19 +19,15 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Task from "@/variables/Task";
+import { vxm } from "@/store/store";
 
 @Component({
   name: "TaskDetailsModal"
 })
 export default class TaskDetailsModal extends Vue {
   @Prop() targetTask!: Task;
+  storeTasks = vxm.tasks;
   currentTask = this.targetTask;
-  targName = this.targetTask.name;
-  $refs!: {
-    taskName: HTMLFormElement;
-    taskDeadline: HTMLFormElement;
-    taskDescription: HTMLFormElement;
-  };
   buttonSave: string = "Save";
   buttonSelectAction: string = "Edit";
   flagShowSave: boolean = false;
@@ -42,12 +35,6 @@ export default class TaskDetailsModal extends Vue {
 
   handleInput() {
     this.flagShowSave = true;
-  }
-
-  updateTask() {
-    this.currentTask.name = this.$refs.taskName.value;
-    this.currentTask.time = this.$refs.taskDeadline.value;
-    this.currentTask.description = this.$refs.taskDescription.value;
   }
 
   editTask() {
@@ -63,13 +50,12 @@ export default class TaskDetailsModal extends Vue {
   }
 
   saveChanges() {
+    this.$emit("closeModal");
     this.buttonSelectAction = "Edit";
     this.keyEdit = true;
     this.flagShowSave = false;
-    this.updateTask();
     const updatedTask = this.currentTask;
-    this.$emit("sendEditedTask", updatedTask);
-    this.$emit("closeModal");
+    this.storeTasks.updatedData(updatedTask);
   }
 }
 </script>

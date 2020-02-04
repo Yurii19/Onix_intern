@@ -2,14 +2,12 @@
   .details_wrap
     TaskAddModal(
                  v-if="typeModalRequest == 'Add'"
-                 v-on:sendAddedTask="sendAddedTask"
                  v-on:closeModal="sendCancelForm"
     )
     TaskDetailsModal(
                 v-if="typeModalRequest == 'Edit'"
                 v-bind:targetTask="currentTask"
                 v-on:closeModal="sendCancelForm"
-                v-on:sendEditedTask="resendEditedTask"
     )
 </template>
 
@@ -31,24 +29,6 @@ export default class LayoutModal extends Vue {
   @Prop({default: ""}) typeModal!: string;
   typeModalRequest = this.typeModal;
   currentTask = this.targetTask;
-
-  $refs!: {
-    taskName: HTMLFormElement;
-    taskDeadline: HTMLFormElement;
-    taskDescription: HTMLFormElement;
-  };
-  buttonSave: string = "Save";
-  buttonValue: string = "Edit";
-  flagShowSave: boolean = false;
-  keyEdit = true;
-
-  resendEditedTask(updatedTask:any) {
-    this.$emit("sendEditedTask", updatedTask);
-  }
-  
-  sendAddedTask(newTask:any) {
-      this.$emit("sendAddedTask", newTask );
-  }
 
   sendCancelForm(){
       this.$emit("closeModal"); 

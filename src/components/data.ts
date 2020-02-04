@@ -1,6 +1,8 @@
     import Task from "../variables/Task";
    // import {Statuses} from "../variables/Statuses";
 
+   export const imgBox: string[] = ['Tulips.jpg','Tulips.jpg','Tulips.jpg','Map5.jpg'];
+
     export const dataActivity: object[] = [
         {
           name: "Darika Samak ",
@@ -37,7 +39,8 @@
             description: "Internet resources should be used",
             time: "2019-11-27",
             //extraDescription: "",
-            status: "done"
+            status: "done",
+            created: 0
           },
           {
             id: 2,
@@ -46,7 +49,8 @@
               "To use the following mechanisms: variables, nesting, mixins, and selector inheritance",
             time: "2020-02-28",
            // extraDescription: "",
-           status: "todo"
+           status: "todo",
+           created: 0
           },
           {
             id: 3,
@@ -54,6 +58,7 @@
             description: "Inform this mentor",
             time: "2019-11-30",
            // extraDescription: "",
-           status: "todo"
+           status: "todo",
+           created: 0
           }
       ]
