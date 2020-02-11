@@ -15,6 +15,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Task from "@/variables/Task";
 import { vxm } from "@/store/store";
+import {sendNewTask} from "@/service/tasksApi"
 
 
 @Component({
@@ -38,6 +39,9 @@ export default class TaskAddModal extends Vue {
   descriptionPlaceholder: string = "Input task description";
   newTask = ["", "", ""];
 
+// updated() {
+//   this.storeTasks.getRemoteData();
+// }
  
 
   cancelForm() {
@@ -66,9 +70,10 @@ export default class TaskAddModal extends Vue {
         description: description._value,
         time: time._value,
         status: "todo",
-        created:  Date.now()
+        created:  Date.now().toString()
       };
-      this.storeTasks.addTask(newTask);
+      this.storeTasks.addTaskByAction(newTask);
+     // sendNewTask(newTask);
       for (let i = 0; i < this.newTask.length; i++) {
         this.newTask[i] = "";
       }

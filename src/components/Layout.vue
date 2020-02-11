@@ -19,6 +19,7 @@ import MainHeader from "./MainHeader.vue";
 import MainContent from "./MainContent.vue";
 import { dataTasks } from "./data";
 import Task from "../variables/Task";
+import { vxm } from "../store/store";
 @Component({
   components: {
     SideBlock,
@@ -31,11 +32,14 @@ export default class Layout extends Vue {
   buttonShowValue = "M";
   sidebarFlag = false;
   leftBar = this.$refs.aside;
-
+  tempStore = vxm.tasks;
   $refs!: {
     aside: HTMLElement;
   };
 
+ mounted() {
+   this.tempStore.getRemoteData();
+ }
   showAside() {
     const sel = document.getElementById("aside");
     const sidebar = this.$refs.aside; // ? undefined
@@ -79,7 +83,7 @@ export default class Layout extends Vue {
 
 .Layout {
   display: flex;
-  max-width: 1440px;
+ // max-width: 1440px;
   margin: auto;
   flex: 1;
   font-family: "Avenir", Helvetica, Arial, sans-serif;

@@ -2,63 +2,32 @@
   .details_wrap
     form.new-task
         .new-task_wrap
-          input.add-buton(type="button" v-model="buttonSelectAction" v-on:click="editTask")
-          .input-block(v-on:input="handleInput")
-            input(v-bind:readonly="keyEdit" type="text" 
+          .input-block
+            input(v-bind:readonly="true" type="text" 
                   v-model="currentTask.name")
-            input(v-bind:readonly="keyEdit" type="text"
+            input(v-bind:readonly="true" type="text"
                   v-model="currentTask.time")
-            textarea(v-bind:readonly="keyEdit" rows="4" 
+            textarea(v-bind:readonly="true" rows="4" 
                      v-model="currentTask.description")
           .controls  
             transition(name="fade")
-            input.add-buton(v-show="flagShowSave" type="submit" 
-                            v-model="buttonSave" v-on:click.prevent="saveChanges")
+            input.add-buton(type="button" v-model="buttonSave" v-on:click.prevent="cancelModal")
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import Task from "@/variables/Task";
-import { vxm } from "@/store/store";
-import { updateTaskRemote } from "@/service/tasksApi"
 
 @Component({
-  name: "TaskDetailsModal"
+  name: "TaskShowModal"
 })
-export default class TaskDetailsModal extends Vue {
+export default class TaskShowModal extends Vue {
   @Prop() targetTask!: Task;
-  storeTasks = vxm.tasks;
   currentTask = this.targetTask;
-  buttonSave: string = "Save";
-  buttonSelectAction: string = "Edit";
-  flagShowSave: boolean = false;
-  keyEdit = true;
+  buttonSave: string = "Cancel";
 
-  handleInput() {
-    this.flagShowSave = true;
-  }
-
-  editTask() {
-    if (this.buttonSelectAction == "Cancel") {
-      this.buttonSelectAction = "Edit";
-      this.keyEdit = true;
-      this.$emit("closeModal");
-    } else {
-      this.buttonSelectAction = "Cancel";
-      this.keyEdit = false;
-    }
-    this.flagShowSave = false;
-  }
-
-  saveChanges() {
+  cancelModal() {
     this.$emit("closeModal");
-    this.buttonSelectAction = "Edit";
-    this.keyEdit = true;
-    this.flagShowSave = false;
-    const updatedTask = this.currentTask;
-    this.storeTasks.updatedData;
-    let taskPosition =   this.storeTasks.dataValue.findIndex((e:any) => e.id === updatedTask.id);
-    this.storeTasks.updateTaskByAction(updatedTask, taskPosition);
   }
 }
 </script>

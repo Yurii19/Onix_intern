@@ -41,8 +41,8 @@ import { Component, Vue, Prop, Mixins } from "vue-property-decorator";
 import { Statuses } from "../variables/Statuses";
 import LayoutModal from "../components/LayoutModal.vue";
 import Task from "../variables/Task";
-import MixinComponent from "@/variables/MixinComponent.vue";
-import { vxm } from "@/store/store";
+import MixinComponent from "../variables/MixinComponent.vue";
+import { vxm } from "../store/store";
 
 @Component({
   name: "KanbanView",

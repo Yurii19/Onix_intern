@@ -8,5 +8,5 @@ export default interface Task {
     description: string;
     time: string;
     status: string;
-    created: number;
+    created: string;
 }

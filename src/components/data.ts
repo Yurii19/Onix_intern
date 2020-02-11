@@ -38,9 +38,8 @@
             name: "Learn scss",
             description: "Internet resources should be used",
             time: "2019-11-27",
-            //extraDescription: "",
             status: "done",
-            created: 0
+            created:"1579989600000"
           },
           {
             id: 2,
@@ -48,17 +47,15 @@
             description:
               "To use the following mechanisms: variables, nesting, mixins, and selector inheritance",
             time: "2020-02-28",
-           // extraDescription: "",
            status: "todo",
-           created: 0
+           created: "1580767200000"
           },
           {
             id: 3,
             name: "Upload Homework to github",
             description: "Inform this mentor",
             time: "2019-11-30",
-           // extraDescription: "",
            status: "todo",
-           created: 0
+           created: "1580940000000"
           }
       ]

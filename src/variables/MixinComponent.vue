@@ -5,14 +5,14 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Mixins } from 'vue-property-decorator';
-import Task from "@/variables/Task";
+import Task from "../variables/Task";
 
 @Component({
   name: "MixinComponent"
 })
 export default class MixinComponent extends Vue {
   showModal: boolean = false;
-  mixinReport = 'Hello world from : ' + this.$options.name;
+ // mixinReport = 'Hello world from : ' + this.$options.name;
   currentPage: Task [] = [];
   taskToEdit: Task | null = null;
 

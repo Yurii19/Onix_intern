@@ -9,6 +9,11 @@
                 v-bind:targetTask="currentTask"
                 v-on:closeModal="sendCancelForm"
     )
+    TaskShowModal(
+                v-if="typeModalRequest == 'Show'"
+                v-bind:targetTask="currentTask"
+                v-on:closeModal="sendCancelForm"
+    )
 </template>
 
 <script lang="ts">
@@ -16,12 +21,14 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import TaskDetailsModal from "../components/layouts/TaskDetailsModal.vue";
 import TaskAddModal from "../components/layouts/TaskAddModal.vue";
 import Task from "../variables/Task";
+import TaskShowModal from "../components/layouts/TaskShowModal.vue";
 
 @Component({
   name: "LayoutModal",
   components:{
       TaskAddModal,
-      TaskDetailsModal
+      TaskDetailsModal,
+      TaskShowModal
   }
 })
 export default class LayoutModal extends Vue {

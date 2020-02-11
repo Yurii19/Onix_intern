@@ -29,6 +29,7 @@ export default class FilesView extends Vue {
   text-align: left;
   display: flex;
   flex-direction: column;
+  padding: 0;
   .img_file_name {
     margin-top: 2px;
     transition: 0.2s;
@@ -36,12 +37,10 @@ export default class FilesView extends Vue {
     text-align: left;
     color:$dark-grey;
     background-color: $light-grey;
-    border: 2px solid $light-grey;
     border-radius: 9px;
   }
    .img_file_name:hover {
-     margin-left: 10px;
-      border: 2px solid white;
+     padding-left: 30px;
  }
 }
 

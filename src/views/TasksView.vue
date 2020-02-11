@@ -15,15 +15,16 @@
               span.task_name(v-bind:id="action.id") {{action.name+' : '}}
               span.task_description(v-bind:id="action.id") {{action.description}}
            span.action-time(v-bind:id="action.id") {{action.time}}
-         input.remove-button(type="button" v-model="buttonRemoveText" v-on:click="removeTask(action.name)")
+         input.remove-button(type="button" v-model="buttonRemoveText" v-on:click="removeTask(action.id)")
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Mixins, Watch } from "vue-property-decorator";
 import LayoutModal from "../components/LayoutModal.vue";
 import Task from "../variables/Task";
-import MixinComponent from "@/variables/MixinComponent.vue";
-import { vxm } from "@/store/store";
+import MixinComponent from "../variables/MixinComponent.vue";
+import { vxm } from "../store/store";
+import { removeTaskRemote } from "../service/tasksApi"
 
 @Component({
   name: "TasksView",
@@ -48,28 +49,9 @@ export default class TasksView extends Mixins(MixinComponent) {
     "Are you sure you want to change the number of tasks?";
   newTask = ["", "", ""];
 
-  get asd() {
-    return this.storeTasks.dataSize;
-  }
-
-  saveState() {
-    const parsed = JSON.stringify(this.storeTasks.dataValue);
-    localStorage.setItem('setOfTasks', parsed);
-  }
-
-  created() {}
-
-  beforeUpdate() {}
-
-  updated() {
-    this.saveState();
-  }
-
   mounted() {
     this.addBigSmallClass2();
   }
-
-  beforeDestroy() {}
 
   requestAddModal() {
     this.showModal = true;
@@ -128,10 +110,12 @@ export default class TasksView extends Mixins(MixinComponent) {
     })();
   }
 
-  removeTask(name: any) {
+  removeTask(id: any) {
     if (confirm(this.confirmQuestion)) {
-      this.storeTasks.removeTask(name);
+     // removeTaskRemote(id);
+      this.storeTasks.removeTaskByAction(name);
       this.currentPage = this.storeTasks.dataValue;
+      //removeTaskRemote(id);
     }
   }
 }
