@@ -113,7 +113,7 @@ export default class TasksView extends Mixins(MixinComponent) {
   removeTask(id: any) {
     if (confirm(this.confirmQuestion)) {
      // removeTaskRemote(id);
-      this.storeTasks.removeTaskByAction(name);
+      this.storeTasks.removeTaskByAction(id);
       this.currentPage = this.storeTasks.dataValue;
       //removeTaskRemote(id);
     }

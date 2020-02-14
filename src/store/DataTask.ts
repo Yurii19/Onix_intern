@@ -2,24 +2,23 @@ import { VuexModule, mutation, action, getter, Module } from "vuex-class-compone
 import Task from "../variables/Task";
 import { dataTasks } from "../components/data";
 import axios from 'axios';
-import {tasksReq} from "../service/api"
-import { getData, sendNewTask, removeTaskRemote,updateTaskRemote } from "../service/tasksApi"
+import { tasksReq } from "../service/api"
+import { getData, sendNewTask, removeTaskRemote, updateTaskRemote } from "../service/tasksApi"
 
 //@Module({namespacedPath: "store/"})
 export class DataTask extends VuexModule {
 
-  setOfTasks: Task[] = 
-  [{
-            id: 1,
-            name: "Learn scss",
-            description: "Internet resources should be used",
-            time: "2019-11-27",
-            status: "done",
-            created:"1579989600000"
-          }];
+  setOfTasks: Task[] =
+    [{
+      id: 1,
+      name: "Learn scss",
+      description: "Internet resources should be used",
+      time: "2019-11-27",
+      status: "done",
+      created: "1579989600000"
+    }];
 
-  @mutation initLocalData(remoted:any){
-    //alert('initLocalData');
+  @mutation initLocalData(remoted: any) {
     this.setOfTasks = remoted.slice();
   }
 
@@ -29,39 +28,35 @@ export class DataTask extends VuexModule {
       this.setOfTasks[i].id = i;
     }
   }
-  @mutation updateData(updated: any) {
-    const res = this.setOfTasks.find(el => el.id === updated.id);
-    if (res) {
-      const targetId = this.setOfTasks.indexOf(res);
-      this.setOfTasks.splice(targetId, updated);
-    }
+
+  @mutation updateData(param: { updated: Task, position: number }) {
+    this.setOfTasks.splice(param.position, 1, param.updated)
   }
-  @mutation removeTask(prop: string) {
-    alert('removeTask');
-    let localSet = this.setOfTasks;
-    localSet = localSet.filter(el => el.name != prop);
-    for (let i = 0; i < localSet.length; i++) {
-      localSet[i].id = i;
+  @mutation removeTask(prop: number) {
+   // alert('removeTask');
+    this.setOfTasks.splice(prop, 1)
+    for (let i = 0; i < this.setOfTasks.length; i++) {
+      this.setOfTasks[i].id = i;
     }
-    this.setOfTasks = localSet.slice();
   }
 
-  @action async updateTaskByAction(param: { task: Task; id: number; }) {
-    alert('updateTaskByAction');
-    updateTaskRemote(param.task, param.id);
-    this.updateData(param.task);
+  @action async updateTaskByAction(param: { updated: Task, position: number }) {
+   // alert('updateTaskByAction -> ' + param.updated.name);
+    updateTaskRemote(param.updated);
+    this.updateData(param);
   }
-  @action async removeTaskByAction(targId: string) {
+
+  @action async removeTaskByAction(targId: number) {
     removeTaskRemote(targId);
     this.removeTask(targId);
   }
-  @action async addTaskByAction(newtask:any) {
+  @action async addTaskByAction(newtask: any) {
     sendNewTask(newtask);
     this.addTask(newtask);
   }
 
   @action async getRemoteData() {
-   tasksReq('tasks').then(resp =>  {this.initLocalData(resp.data)});
+    tasksReq('tasks').then(resp => { this.initLocalData(resp.data) });
   }
 
   @action async addRemoteData() {

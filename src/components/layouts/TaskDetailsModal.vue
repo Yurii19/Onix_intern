@@ -28,7 +28,7 @@ import { updateTaskRemote } from "@/service/tasksApi"
 export default class TaskDetailsModal extends Vue {
   @Prop() targetTask!: Task;
   storeTasks = vxm.tasks;
-  currentTask = this.targetTask;
+  currentTask: Task = this.targetTask;
   buttonSave: string = "Save";
   buttonSelectAction: string = "Edit";
   flagShowSave: boolean = false;
@@ -51,14 +51,17 @@ export default class TaskDetailsModal extends Vue {
   }
 
   saveChanges() {
+    //alert('saveChanges');
     this.$emit("closeModal");
     this.buttonSelectAction = "Edit";
     this.keyEdit = true;
     this.flagShowSave = false;
     const updatedTask = this.currentTask;
     this.storeTasks.updatedData;
-    let taskPosition =   this.storeTasks.dataValue.findIndex((e:any) => e.id === updatedTask.id);
-    this.storeTasks.updateTaskByAction(updatedTask, taskPosition);
+   // alert('saveChanges');
+    let taskPosition: number =   this.storeTasks.dataValue.findIndex((e:any) => e.id === updatedTask.id);
+    let res = {updated:updatedTask,position: taskPosition };
+    this.storeTasks.updateTaskByAction(res);
   }
 }
 </script>

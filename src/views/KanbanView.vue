@@ -172,7 +172,9 @@ export default class KanbanView extends Mixins(MixinComponent) {
       const newStatus = this.getRowStatus(localTask);
       if (newStatus != oldStatus && oldStatus != "done") {
         theTask.status = newStatus;
-        this.storeTasks.updateData(theTask);
+        let taskPosition: number =   this.storeTasks.dataValue.findIndex((e:any) => e.id === theTask.id);
+        const res = {updated: theTask, position:taskPosition};
+        this.storeTasks.updateTaskByAction(res);
         this.currentPage = this.storeTasks.dataValue.slice();
       }
     }

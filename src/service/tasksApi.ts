@@ -5,7 +5,7 @@ import Task from "../variables/Task";
 
 export async function getData() {
     let res = null;
-    tasksReq('tasks').then(resp => {res = resp.data;});
+    tasksReq('/tasks').then(resp => res = resp.data);
     //alert(res);
     return res;
     //alert(this.localData);
@@ -13,14 +13,15 @@ export async function getData() {
 
 export function sendNewTask(newTask:any) {
    // alert("sentNewTask - "+ newTask.name);
-    tasksReq.put('addtask',newTask).then(resp => alert(resp.status));
+    tasksReq.put('/tasks',newTask).then(resp => alert(resp.status)).catch((err: any) => alert(err));
+    
 }
 
 export function removeTaskRemote(taskId:any) {
-    tasksReq.delete('remove', taskId).then(resp => alert(resp.status));
+    tasksReq.delete('/tasks'+'/'+taskId).then(resp => alert(resp.status)).catch((err:any) => alert(err));
 }
 
-export function updateTaskRemote(updated: Task, position:number) {
+export function updateTaskRemote(updated: Task) {
     // alert('updateTaskRemote-> ' + updated.name );
-    tasksReq.post('update', {task: updated, pos: position}).then(resp => alert(resp.status));
+    tasksReq.patch('/tasks',  updated ).then(resp => alert(resp.status)).catch((err:any) => alert(err));
 }
